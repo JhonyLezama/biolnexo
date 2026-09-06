@@ -16,6 +16,8 @@ from pathlib import Path
 LLM_ENABLED = os.environ.get("LLM_ENABLED", "false").lower() == "true"
 GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY", "")
 MODEL = os.environ.get("GEMINI_MODEL", "gemini-2.0-flash")
+SUPABASE_URL = os.environ.get("SUPABASE_URL") or os.environ.get("VITE_SUPABASE_URL") or os.environ.get("NEXT_PUBLIC_SUPABASE_URL") or ""
+SUPABASE_SERVICE_ROLE_KEY = os.environ.get("SUPABASE_SERVICE_ROLE_KEY") or os.environ.get("SUPABASE_SERVICE_KEY") or ""
 # Tier permitido: el agente solo propone, editor aprueba
 ALLOWED_TIERS = ["Investigación publicada", "Interpretación BiolNexo", "Divulgación científica"]
 
@@ -123,15 +125,40 @@ def generate_draft(area: str, lang: str, sources_json: str):
         data["tier"] = "Divulgación científica"
 
     print(json.dumps(data, ensure_ascii=False, indent=2))
-    # aquí iría: supabase.table("drafts").insert({... , status="pending_review"}).execute()
-    # 3×/semana se orquesta via Supabase Cron / Vercel Cron lunes/miércoles/viernes 06:00 UTC
+    # Inserta en Supabase drafts (requiere SUPABASE_SERVICE_ROLE_KEY)
+    if SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY:
+        try:
+            from supabase import create_client
+            supa = create_client(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY)
+            slug = data.get("slug") or data.get("title","").lower().replace(" ", "-")[:48].replace("[^a-z0-9-]", "-")
+            # genera slug limpio
+            import re
+            slug = re.sub(r"[^a-z0-9-]+", "-", data.get("title","draft").lower())[:48].strip("-")
+            payload = {
+                "area_slug": data.get("category") or area,
+                "lang": lang,
+                "tier": data.get("tier") or "Divulgación científica",
+                "title": data.get("title"),
+                "slug": slug,
+                "excerpt": data.get("excerpt","")[:300],
+                "body_json": data.get("body", []),
+                "references": data.get("references", []),
+                "source_doi": data.get("source_doi"),
+                "status": "pending_review",
+            }
+            res = supa.table("drafts").insert(payload).execute()
+            print(f"[BiolNexo] Draft insertado en Supabase: {slug} -> /admin/borradores")
+        except Exception as e:
+            print(f"[BiolNexo] No se pudo insertar en Supabase (modo log): {e}")
+    else:
+        print("[BiolNexo] Sin SUPABASE_SERVICE_ROLE_KEY -> solo log, no inserta. Configura en GitHub Secrets para 3×/semana.")
     return data
 
 if __name__ == "__main__":
-    # Uso: LLM_ENABLED=true GEMINI_API_KEY=xxx python scripts/agent_draft.py --area bioinformatica --lang es
+    # Uso: LLM_ENABLED=true GEMINI_API_KEY=xxx python scripts/agent_draft.py --area biotecnologia --lang es
     import argparse
     ap = argparse.ArgumentParser(description="BiolNexo agent draft")
-    ap.add_argument("--area", default="bioinformatica", choices=["biologia","bioinformatica","biotecnologia","ia-cientifica","ecologia","tecnologia","ciencia-datos","investigacion"])
+    ap.add_argument("--area", default="biotecnologia", choices=["biotecnologia","tendencias","experimentos-caseros","software-salud"])
     ap.add_argument("--lang", default="es", choices=["es","en"])
     ap.add_argument("--sources", default="[]", help="JSON array string de sources con doi/url")
     args = ap.parse_args()

@@ -42,8 +42,11 @@ create table if not exists articles (
   created_at timestamptz default now()
 );
 alter table articles enable row level security;
+drop policy if exists "public read articles" on articles;
 create policy "public read articles" on articles for select using (true);
+drop policy if exists "service insert articles" on articles;
 create policy "service insert articles" on articles for insert with check (auth.role() = 'service_role');
+drop policy if exists "service update articles" on articles;
 create policy "service update articles" on articles for update using (auth.role() = 'service_role');
 
 -- 4) Software projects (nuevo tipo)
@@ -61,7 +64,9 @@ create table if not exists software_projects (
   created_at timestamptz default now()
 );
 alter table software_projects enable row level security;
+drop policy if exists "public read software" on software_projects;
 create policy "public read software" on software_projects for select using (true);
+drop policy if exists "service write software" on software_projects;
 create policy "service write software" on software_projects for all using (auth.role() = 'service_role');
 
 -- 5) Experiments / Datasets / Publications / Authors pueden seguir como seed estático o migrarse luego;

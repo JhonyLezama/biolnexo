@@ -1,5 +1,5 @@
 /**
- * Modelo de datos de BioNexo.
+ * Modelo de datos de BiolNexo.
  * Esta capa tipada está pensada para mapear 1:1 con una futura API / CMS:
  * cada interfaz equivale a una colección (articles, categories, experiments,
  * datasets, publications, authors).
@@ -7,7 +7,7 @@
 
 export type Tier =
   | "Investigación publicada"
-  | "Interpretación BioNexo"
+  | "Interpretación BiolNexo"
   | "Divulgación científica";
 
 export type CategorySlug =

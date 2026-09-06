@@ -72,7 +72,7 @@ function Ticker() {
 }
 
 export default function Home() {
-  usePageTitle("BioNexo — Ciencia • Tecnología • Ingeniería");
+  usePageTitle("BiolNexo — Ciencia • Tecnología • Ingeniería");
   const featured = articles.find((a) => a.featured) ?? articles[0];
   const latest = articles.slice(1, 7);
   const bioArts = [
@@ -102,7 +102,7 @@ export default function Home() {
         <div className="absolute inset-0 wash-blue" aria-hidden />
         <div className="absolute inset-0 wash-aqua" aria-hidden />
 
-        <div className="relative max-w-7xl mx-auto px-5 md:px-8 grid lg:grid-cols-12 gap-12 lg:gap-8 items-center">
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-4 sm:px-5 md:px-8 grid lg:grid-cols-12 gap-8 md:gap-12 lg:gap-8 items-center">
           <div className="lg:col-span-6">
             <Reveal>
               <p className="inline-flex items-center gap-3 font-mono text-[11px] md:text-xs uppercase tracking-[0.24em] text-primary">
@@ -112,7 +112,7 @@ export default function Home() {
                 </span>
                 [ Plataforma científica ]<span className="caret-blink text-aqua">_</span>
               </p>
-              <h1 className="mt-5 font-display font-bold text-[2.5rem] leading-[1.05] md:text-[3.6rem] tracking-[-0.02em] text-ink">
+              <h1 className="mt-5 font-display font-bold text-[clamp(2rem,7vw,2.5rem)] leading-[1.05] md:text-[clamp(2.5rem,4vw,3.6rem)] tracking-[-0.02em] text-ink">
                 La ciencia que{" "}
                 <span className="relative inline-block text-primary">
                   conecta
@@ -164,7 +164,7 @@ export default function Home() {
       <Ticker />
 
       {/* ============ LO MÁS RECIENTE ============ */}
-      <section className="max-w-7xl mx-auto px-5 md:px-8 py-20 md:py-28">
+      <section className="max-w-7xl mx-auto px-4 sm:px-5 md:px-8 py-20 md:py-28">
         <SectionHead
           index="01"
           eyebrow="Destacados"
@@ -186,7 +186,7 @@ export default function Home() {
 
       {/* ============ CATEGORÍAS ============ */}
       <section className="bg-white border-y border-line">
-        <div className="max-w-7xl mx-auto px-5 md:px-8 py-20 md:py-28">
+        <div className="max-w-7xl mx-auto px-4 sm:px-5 md:px-8 py-20 md:py-28">
           <SectionHead
             index="02"
             eyebrow="Áreas"
@@ -247,9 +247,9 @@ export default function Home() {
           style={{ background: "radial-gradient(circle, rgba(14,143,95,0.12), transparent 65%)" }}
           aria-hidden
         />
-        <div className="relative max-w-7xl mx-auto px-5 md:px-8 py-20 md:py-28">
-          <div className="grid lg:grid-cols-2 gap-14 items-start">
-            <div>
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-5 md:px-8 py-16 sm:py-20 md:py-28">
+          <div className="grid lg:grid-cols-2 gap-8 sm:gap-10 lg:gap-14 items-start min-w-0">
+            <div className="min-w-0">
               <SectionHead
                 dark
                 index="03"
@@ -258,9 +258,9 @@ export default function Home() {
                 lead="Secuencias, genomas, alineamientos y árboles filogenéticos: la capa computacional donde la biología se vuelve analizable, comparable y reproducible."
               />
               <Reveal delay={100}>
-                <div className="flex flex-wrap gap-2">
+                <div className="grid grid-cols-2 sm:flex sm:flex-wrap gap-2">
                   {bioTopics.map((t) => (
-                    <span key={t} className="font-mono text-[11.5px] text-[#9db4ca] border border-white/15 rounded-full px-3.5 py-1.5 hover:border-aqua hover:text-aqua transition-colors cursor-default">
+                    <span key={t} className="font-mono text-[11px] sm:text-[11.5px] text-[#9db4ca] border border-white/15 rounded-full px-3 sm:px-3.5 py-1.5 text-center hover:border-aqua hover:text-aqua transition-colors cursor-default break-words">
                       {t}
                     </span>
                   ))}
@@ -272,20 +272,20 @@ export default function Home() {
                     <Link
                       key={a.slug}
                       to={`/articulo/${a.slug}`}
-                      className="group flex items-center gap-5 py-4 border-b border-white/10 hover:bg-white/[0.04] px-3 -mx-3 rounded-md transition-colors duration-200"
+                      className="group grid grid-cols-[28px_1fr_16px] sm:flex sm:items-center gap-3 sm:gap-5 py-3 sm:py-4 border-b border-white/10 hover:bg-white/[0.04] px-2 sm:px-3 -mx-2 sm:-mx-3 rounded-md transition-colors duration-200 min-w-0"
                     >
-                      <span className="font-mono text-[12px] text-aqua/70 shrink-0">
+                      <span className="font-mono text-[12px] text-aqua/70 shrink-0 self-center">
                         0{i + 1}
                       </span>
                       <span className="min-w-0">
-                        <span className="block font-display font-semibold text-[15.5px] text-white leading-snug group-hover:text-aqua transition-colors truncate">
+                        <span className="block font-display font-semibold text-[14px] sm:text-[15.5px] text-white leading-snug group-hover:text-aqua transition-colors line-clamp-2 sm:truncate">
                           {a.title}
                         </span>
-                        <span className="block font-mono text-[11px] text-[#7e9ab5] mt-1">
+                        <span className="block font-mono text-[10px] sm:text-[11px] text-[#7e9ab5] mt-1 break-words">
                           {categoryName(a.category)} · {fmtDate(a.date)} · {a.readMin} min
                         </span>
                       </span>
-                      <IconArrow className="w-4 h-4 text-aqua ml-auto shrink-0 opacity-0 group-hover:opacity-100 group-hover:translate-x-1 transition-all duration-300" />
+                      <IconArrow className="w-4 h-4 text-aqua shrink-0 opacity-0 group-hover:opacity-100 group-hover:translate-x-1 transition-all duration-300 self-center hidden sm:block" />
                     </Link>
                   ))}
                 </div>
@@ -306,14 +306,14 @@ export default function Home() {
               </Reveal>
             </div>
 
-            <div className="space-y-6">
-              <Reveal delay={120}>
-                <ConsoleFrame title="bionexo://alineamiento · COI.fasta">
+            <div className="grid gap-5 sm:gap-6 min-w-0">
+              <Reveal delay={120} className="min-w-0">
+                <ConsoleFrame title="biolnexo://alineamiento · COI.fasta">
                   <AlignmentViz />
                 </ConsoleFrame>
               </Reveal>
-              <Reveal delay={220}>
-                <ConsoleFrame title="bionexo://filogenia · arbol_modelo.nwk">
+              <Reveal delay={220} className="min-w-0">
+                <ConsoleFrame title="biolnexo://filogenia · arbol_modelo.nwk">
                   <PhyloTree />
                 </ConsoleFrame>
               </Reveal>
@@ -323,7 +323,7 @@ export default function Home() {
       </section>
 
       {/* ============ EXPERIMENTOS ============ */}
-      <section className="max-w-7xl mx-auto px-5 md:px-8 py-20 md:py-28">
+      <section className="max-w-7xl mx-auto px-4 sm:px-5 md:px-8 py-20 md:py-28">
         <SectionHead
           index="04"
           eyebrow="Experimentos"
@@ -385,8 +385,8 @@ export default function Home() {
       </section>
 
       {/* ============ DATOS ============ */}
-      <section className="bg-white border-y border-line">
-        <div className="max-w-7xl mx-auto px-5 md:px-8 py-20 md:py-28">
+      <section className="bg-white border-y border-line overflow-hidden">
+        <div className="max-w-7xl mx-auto px-4 sm:px-5 md:px-8 py-20 md:py-28">
           <SectionHead
             index="05"
             eyebrow="Datos"
@@ -394,53 +394,53 @@ export default function Home() {
             lead="Conjuntos de datos biológicos, visualizaciones interactivas y estadísticas: la materia prima de la ciencia moderna, con repositorios reales y datos de demostración claramente etiquetados."
             action={{ to: "/datos", label: "Explorar datasets" }}
           />
-          <div className="grid lg:grid-cols-5 gap-6 items-start">
-            <Reveal className="lg:col-span-3">
-              <ConsoleFrame title="costo_genoma.log — tendencia histórica (ilustrativa, basada en NHGRI)">
-                <CostChart data={sequencingCost} />
-              </ConsoleFrame>
-              <div className="mt-6">
-                <ConsoleFrame title="datos_genomicos.csv — volumen público estimado">
-                  {/* segundo gráfico opcional en pantallas grandes */}
-                  <div className="hidden md:block">
-                    <GrowthArea data={genomicGrowth} />
-                  </div>
-                  <p className="md:hidden font-mono text-[12px] text-[#7e9ab5]">
-                    El gráfico de crecimiento de datos está disponible en pantallas grandes.
-                  </p>
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-start min-w-0">
+            {/* Gráficas - grid anidado */}
+            <div className="lg:col-span-7 xl:col-span-8 grid gap-6 min-w-0">
+              <Reveal className="min-w-0">
+                <ConsoleFrame title="costo_genoma.log — tendencia histórica (ilustrativa, basada en NHGRI)">
+                  <CostChart data={sequencingCost} />
                 </ConsoleFrame>
+              </Reveal>
+              <Reveal className="min-w-0" delay={120}>
+                <ConsoleFrame title="datos_genomicos.csv — volumen público estimado">
+                  <GrowthArea data={genomicGrowth} />
+                </ConsoleFrame>
+              </Reveal>
+            </div>
+            {/* Datasets - grid */}
+            <div className="lg:col-span-5 xl:col-span-4 grid gap-4 content-start min-w-0">
+              <div className="grid gap-4">
+                {datasets.slice(0, 4).map((d, i) => (
+                  <Reveal key={d.id} delay={i * 90} className="min-w-0">
+                    <Link
+                      to="/datos"
+                      className="group grid grid-cols-[40px_1fr_16px] items-center gap-3 sm:gap-4 bg-paper border border-line rounded-lg p-4 transition-all duration-300 hover:border-primary/40 hover:bg-white hover:shadow-md min-w-0"
+                    >
+                      <span className="w-10 h-10 rounded-md bg-primary/10 text-primary flex items-center justify-center font-mono text-[11px] font-semibold shrink-0">
+                        {d.formats[0]}
+                      </span>
+                      <span className="min-w-0">
+                        <span className="block font-display font-semibold text-[14px] sm:text-[15px] text-ink group-hover:text-primary transition-colors truncate">
+                          {d.name}
+                        </span>
+                        <span className="block font-mono text-[11px] text-muted truncate">
+                          {d.org} · {d.records}
+                        </span>
+                      </span>
+                      <IconArrow className="w-4 h-4 text-primary shrink-0 opacity-0 group-hover:opacity-100 transition-opacity" />
+                    </Link>
+                  </Reveal>
+                ))}
               </div>
-            </Reveal>
-            <div className="lg:col-span-2 space-y-4">
-              {datasets.slice(0, 4).map((d, i) => (
-                <Reveal key={d.id} delay={i * 90}>
-                  <Link
-                    to="/datos"
-                    className="group flex items-center gap-4 bg-paper border border-line rounded-lg p-4 transition-all duration-300 hover:border-primary/40 hover:bg-white hover:shadow-md"
-                  >
-                    <span className="w-10 h-10 rounded-md bg-primary/10 text-primary flex items-center justify-center font-mono text-[11px] font-semibold shrink-0">
-                      {d.formats[0]}
-                    </span>
-                    <span className="min-w-0">
-                      <span className="block font-display font-semibold text-[15px] text-ink group-hover:text-primary transition-colors truncate">
-                        {d.name}
-                      </span>
-                      <span className="block font-mono text-[11px] text-muted truncate">
-                        {d.org} · {d.records}
-                      </span>
-                    </span>
-                    <IconArrow className="w-4 h-4 text-primary ml-auto shrink-0 opacity-0 group-hover:opacity-100 transition-opacity" />
-                  </Link>
-                </Reveal>
-              ))}
-              <Reveal delay={380}>
-                <div className="rounded-lg border border-dashed border-primary/30 bg-primary/5 p-5">
+              <Reveal delay={380} className="min-w-0">
+                <div className="rounded-lg border border-dashed border-primary/30 bg-primary/5 p-4 sm:p-5">
                   <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-primary">
                     Próximamente
                   </p>
-                  <p className="mt-2 text-[13.5px] leading-relaxed text-inksoft">
+                  <p className="mt-2 text-[13px] sm:text-[13.5px] leading-relaxed text-inksoft break-words">
                     Visualizaciones interactivas conectadas a APIs científicas
-                    (GenBank, GBIF, PDB) y datasets propios de BioNexo Labs.
+                    (GenBank, GBIF, PDB) y datasets propios de BiolNexo Labs.
                   </p>
                 </div>
               </Reveal>
@@ -450,7 +450,7 @@ export default function Home() {
       </section>
 
       {/* ============ INVESTIGACIÓN ============ */}
-      <section className="max-w-7xl mx-auto px-5 md:px-8 py-20 md:py-28">
+      <section className="max-w-7xl mx-auto px-4 sm:px-5 md:px-8 py-20 md:py-28">
         <SectionHead
           index="06"
           eyebrow="Investigación"
@@ -462,7 +462,7 @@ export default function Home() {
           <Reveal>
             <div className="bg-white border border-line rounded-lg p-6 md:p-7">
               <p className="font-mono text-[11px] uppercase tracking-[0.2em] text-muted">
-                Niveles de contenido BioNexo
+                Niveles de contenido BiolNexo
               </p>
               <div className="mt-5 space-y-5">
                 <div className="border-l-2 border-primary/60 pl-4">
@@ -473,7 +473,7 @@ export default function Home() {
                   </p>
                 </div>
                 <div className="border-l-2 border-bio pl-4">
-                  <TierBadge tier="Interpretación BioNexo" small />
+                  <TierBadge tier="Interpretación BiolNexo" small />
                   <p className="mt-2 text-[13px] leading-relaxed text-inksoft">
                     Análisis editorial propio sobre ciencia publicada: contexto,
                     límites y lectura crítica.
@@ -507,7 +507,7 @@ export default function Home() {
           style={{ background: "radial-gradient(circle, rgba(15,168,192,0.16), transparent 65%)" }}
           aria-hidden
         />
-        <div className="relative max-w-7xl mx-auto px-5 md:px-8 py-16 md:py-20 grid lg:grid-cols-2 gap-10 items-center">
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-5 md:px-8 py-16 md:py-20 grid lg:grid-cols-2 gap-10 items-center">
           <Reveal>
             <p className="font-mono text-[11px] uppercase tracking-[0.24em] text-aqua">
               Boletín semanal

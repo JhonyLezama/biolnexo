@@ -78,132 +78,162 @@ function SearchOverlay({ onClose }: { onClose: () => void }) {
     <div className="fixed inset-0 z-[70]" role="dialog" aria-modal="true" aria-label="Buscador global">
       <button
         aria-label="Cerrar buscador"
-        className="absolute inset-0 bg-navy/55 backdrop-blur-[2px] cursor-default"
+        className="absolute inset-0 bg-navy/70 backdrop-blur-[12px] cursor-default"
         onClick={onClose}
       />
-      <div className="relative max-w-3xl mx-auto px-4 pt-24 md:pt-28">
-        <div className="bg-white rounded-lg shadow-2xl border border-line overflow-hidden">
+      <div className="relative max-w-[640px] mx-auto px-4 pt-[10vh] sm:pt-[14vh]">
+        <div className="bg-white rounded-[24px] sm:rounded-[28px] shadow-[0_24px_64px_rgba(2,14,28,0.32)] border border-white/30 overflow-hidden">
           <form
-            className="flex items-center gap-3 px-5 py-4 border-b border-line"
+            className="flex items-center gap-3 px-4 sm:px-6 py-4 border-b border-line/30 bg-white rounded-t-[24px] sm:rounded-t-[28px] focus-within:border-aqua/20 transition-colors"
             onSubmit={(e) => {
               e.preventDefault();
               if (q.trim()) go(`/busqueda?q=${encodeURIComponent(q.trim())}`);
             }}
           >
-            <IconSearch className="w-5 h-5 text-primary shrink-0" />
+            <span className="w-9 h-9 rounded-full bg-mist text-muted flex items-center justify-center shrink-0">
+              <IconSearch className="w-[18px] h-[18px]" />
+            </span>
             <input
               ref={inputRef}
               value={q}
               onChange={(e) => setQ(e.target.value)}
-              placeholder="Buscar artículos, experimentos, datasets, investigación…"
-              className="flex-1 bg-transparent outline-none text-ink placeholder:text-muted text-[15px] font-body"
+              placeholder="Buscar artículos, experimentos, datasets…"
+              className="flex-1 bg-transparent outline-none text-ink placeholder:text-muted text-[15px] sm:text-[16px] font-body min-w-0"
               aria-label="Término de búsqueda"
             />
-            <button
-              type="submit"
-              className="font-mono text-[11px] uppercase tracking-wider text-primary border border-primary/30 rounded px-2.5 py-1 hover:bg-primary hover:text-white transition-colors"
-            >
-              Enter ↵
-            </button>
+            {q && (
+              <button
+                type="button"
+                onClick={() => setQ("")}
+                aria-label="Limpiar"
+                className="w-7 h-7 rounded-full bg-mist text-muted hover:text-ink flex items-center justify-center shrink-0 transition-colors"
+              >
+                <IconClose className="w-3.5 h-3.5" />
+              </button>
+            )}
+            <div className="hidden sm:flex items-center gap-1.5 shrink-0 ml-1">
+              <kbd className="px-2 py-1 rounded-md bg-mist border border-line font-mono text-[10px] text-muted">ESC</kbd>
+              <kbd className="px-2 py-1 rounded-md bg-navy text-aqua font-mono text-[10px]">↵</kbd>
+            </div>
           </form>
 
-          <div className="max-h-[55vh] overflow-y-auto">
+          <div className="relative max-h-[42vh] sm:max-h-[48vh] overflow-hidden">
             {!results && (
-              <div className="p-6">
-                <p className="font-mono text-[11px] uppercase tracking-[0.2em] text-muted">
-                  Búsquedas frecuentes
-                </p>
-                <div className="mt-3 flex flex-wrap gap-2">
+              <div className="p-5 sm:p-6">
+                <div className="flex items-center gap-2">
+                  <p className="font-mono text-[11px] uppercase tracking-[0.2em] text-muted">Sugerencias</p>
+                  <div className="h-px flex-1 bg-line/60" />
+                </div>
+                <div className="mt-4 grid grid-cols-2 sm:grid-cols-3 gap-2">
                   {suggestions.map((s) => (
                     <button
                       key={s}
                       onClick={() => setQ(s)}
-                      className="px-3.5 py-1.5 rounded-full border border-line text-[13px] text-inksoft hover:border-aqua hover:text-primary transition-colors"
+                      className="group flex items-center gap-2 px-3.5 py-2.5 rounded-xl bg-paper border border-line/60 text-[13px] text-ink font-medium hover:bg-navy hover:text-white hover:border-navy hover:shadow-md transition-all text-left"
                     >
-                      {s}
+                      <span className="w-7 h-7 rounded-lg bg-white group-hover:bg-white/15 border border-line group-hover:border-white/15 flex items-center justify-center shrink-0 transition-colors">
+                        <IconSearch className="w-3.5 h-3.5 text-muted group-hover:text-white" />
+                      </span>
+                      <span className="truncate">{s}</span>
                     </button>
                   ))}
                 </div>
-                <p className="mt-6 text-[13px] text-muted leading-relaxed">
-                  El buscador de BioNexo consulta artículos, experimentos,
-                  datasets y publicaciones. Escribe al menos 2 caracteres para
-                  ver resultados instantáneos.
-                </p>
+                <div className="mt-6 rounded-xl bg-aqua-soft/60 border border-aqua/20 p-4 flex gap-3">
+                  <span className="w-8 h-8 rounded-lg bg-aqua text-white flex items-center justify-center shrink-0 mt-0.5">
+                    <IconSearch className="w-4 h-4" />
+                  </span>
+                  <p className="text-[13px] leading-relaxed text-inksoft">
+                    <span className="font-semibold text-ink">Tip:</span> escribe al menos 2 caracteres. Buscamos en títulos, tags y autores al instante.
+                  </p>
+                </div>
               </div>
             )}
 
             {results && (
-              <div className="divide-y divide-line">
+              <div className="divide-y divide-line/60 pb-8">
                 {results.arts.length > 0 && (
-                  <div className="p-2">
-                    <p className="px-4 pt-3 pb-1 font-mono text-[10px] uppercase tracking-[0.2em] text-muted">
-                      Artículos
+                  <div className="p-2 sm:p-3">
+                    <p className="px-3 pt-2 pb-2 font-mono text-[10px] uppercase tracking-[0.2em] text-muted flex items-center gap-2">
+                      <span className="w-1.5 h-1.5 rounded-full bg-primary" /> Artículos · {results.arts.length}
                     </p>
-                    {results.arts.map((a) => (
-                      <button
-                        key={a.slug}
-                        onClick={() => go(`/articulo/${a.slug}`)}
-                        className="w-full text-left px-4 py-2.5 rounded-md hover:bg-mist transition-colors flex items-center justify-between gap-4 group"
-                      >
-                        <span>
-                          <span className="block font-display font-semibold text-[14.5px] text-ink group-hover:text-primary transition-colors">
-                            {a.title}
+                    <div className="grid gap-1">
+                      {results.arts.map((a) => (
+                        <button
+                          key={a.slug}
+                          onClick={() => go(`/articulo/${a.slug}`)}
+                          className="w-full text-left px-3 py-3 rounded-xl hover:bg-mist border border-transparent hover:border-line/60 transition-all flex items-center justify-between gap-4 group"
+                        >
+                          <span className="min-w-0">
+                            <span className="block font-display font-semibold text-[14px] sm:text-[14.5px] text-ink group-hover:text-primary transition-colors line-clamp-1">
+                              {a.title}
+                            </span>
+                            <span className="block font-mono text-[11px] text-muted mt-1 truncate">
+                              {categoryName(a.category)} · {fmtDate(a.date)}
+                            </span>
                           </span>
-                          <span className="block font-mono text-[11px] text-muted mt-0.5">
-                            {categoryName(a.category)} · {fmtDate(a.date)}
+                          <span className="w-8 h-8 rounded-lg bg-white border border-line group-hover:bg-primary group-hover:text-white group-hover:border-primary text-muted flex items-center justify-center shrink-0 transition-colors">
+                            <IconArrow className="w-3.5 h-3.5" />
                           </span>
-                        </span>
-                        <IconArrow className="w-4 h-4 text-primary opacity-0 group-hover:opacity-100 transition-opacity shrink-0" />
-                      </button>
-                    ))}
+                        </button>
+                      ))}
+                    </div>
                   </div>
                 )}
                 {results.exps.length > 0 && (
-                  <div className="p-2">
-                    <p className="px-4 pt-3 pb-1 font-mono text-[10px] uppercase tracking-[0.2em] text-muted">
-                      Experimentos
+                  <div className="p-2 sm:p-3">
+                    <p className="px-3 pt-2 pb-2 font-mono text-[10px] uppercase tracking-[0.2em] text-muted flex items-center gap-2">
+                      <span className="w-1.5 h-1.5 rounded-full bg-bio" /> Experimentos · {results.exps.length}
                     </p>
-                    {results.exps.map((e) => (
-                      <button
-                        key={e.id}
-                        onClick={() => go("/experimentos")}
-                        className="w-full text-left px-4 py-2.5 rounded-md hover:bg-mist transition-colors font-display font-semibold text-[14.5px] text-ink hover:text-primary"
-                      >
-                        {e.title}
-                      </button>
-                    ))}
+                    <div className="grid gap-1">
+                      {results.exps.map((e) => (
+                        <button
+                          key={e.id}
+                          onClick={() => go("/experimentos")}
+                          className="w-full text-left px-3 py-2.5 rounded-xl hover:bg-mist border border-transparent hover:border-line/60 transition-all flex items-center justify-between gap-3 group"
+                        >
+                          <span className="font-display font-medium text-[13.5px] sm:text-[14px] text-ink group-hover:text-primary truncate min-w-0">{e.title}</span>
+                          <IconArrow className="w-3.5 h-3.5 text-muted group-hover:text-primary shrink-0 transition-colors" />
+                        </button>
+                      ))}
+                    </div>
                   </div>
                 )}
                 {results.sets.length > 0 && (
-                  <div className="p-2">
-                    <p className="px-4 pt-3 pb-1 font-mono text-[10px] uppercase tracking-[0.2em] text-muted">
-                      Datasets
+                  <div className="p-2 sm:p-3">
+                    <p className="px-3 pt-2 pb-2 font-mono text-[10px] uppercase tracking-[0.2em] text-muted flex items-center gap-2">
+                      <span className="w-1.5 h-1.5 rounded-full bg-aqua" /> Datasets · {results.sets.length}
                     </p>
-                    {results.sets.map((d) => (
-                      <button
-                        key={d.id}
-                        onClick={() => go("/datos")}
-                        className="w-full text-left px-4 py-2.5 rounded-md hover:bg-mist transition-colors font-display font-semibold text-[14.5px] text-ink hover:text-primary"
-                      >
-                        {d.name}
-                      </button>
-                    ))}
+                    <div className="grid gap-1">
+                      {results.sets.map((d) => (
+                        <button
+                          key={d.id}
+                          onClick={() => go("/datos")}
+                          className="w-full text-left px-3 py-2.5 rounded-xl hover:bg-mist border border-transparent hover:border-line/60 transition-all flex items-center justify-between gap-3 group"
+                        >
+                          <span className="font-display font-medium text-[13.5px] sm:text-[14px] text-ink group-hover:text-primary truncate min-w-0">{d.name}</span>
+                          <IconArrow className="w-3.5 h-3.5 text-muted group-hover:text-primary shrink-0 transition-colors" />
+                        </button>
+                      ))}
+                    </div>
                   </div>
                 )}
                 {results.pubs.length > 0 && (
-                  <div className="p-2">
-                    <p className="px-4 pt-3 pb-1 font-mono text-[10px] uppercase tracking-[0.2em] text-muted">
-                      Investigación
+                  <div className="p-2 sm:p-3">
+                    <p className="px-3 pt-2 pb-2 font-mono text-[10px] uppercase tracking-[0.2em] text-muted flex items-center gap-2">
+                      <span className="w-1.5 h-1.5 rounded-full bg-navy" /> Investigación · {results.pubs.length}
                     </p>
-                    {results.pubs.map((p) => (
-                      <button
-                        key={p.id}
-                        onClick={() => go("/investigacion")}
-                        className="w-full text-left px-4 py-2.5 rounded-md hover:bg-mist transition-colors font-display font-semibold text-[14.5px] text-ink hover:text-primary"
-                      >
-                        {p.title}
-                      </button>
-                    ))}
+                    <div className="grid gap-1">
+                      {results.pubs.map((p) => (
+                        <button
+                          key={p.id}
+                          onClick={() => go("/investigacion")}
+                          className="w-full text-left px-3 py-2.5 rounded-xl hover:bg-mist border border-transparent hover:border-line/60 transition-all flex items-center justify-between gap-3 group"
+                        >
+                          <span className="font-display font-medium text-[13.5px] sm:text-[14px] text-ink group-hover:text-primary truncate min-w-0">{p.title}</span>
+                          <IconArrow className="w-3.5 h-3.5 text-muted group-hover:text-primary shrink-0 transition-colors" />
+                        </button>
+                      ))}
+                    </div>
                   </div>
                 )}
                 {results.arts.length +
@@ -211,20 +241,39 @@ function SearchOverlay({ onClose }: { onClose: () => void }) {
                   results.sets.length +
                   results.pubs.length ===
                   0 && (
-                  <p className="p-6 text-[14px] text-muted">
-                    Sin resultados para «{q}». Prueba con otro término o{" "}
+                  <div className="p-8 text-center">
+                    <div className="mx-auto w-10 h-10 rounded-xl bg-mist text-muted flex items-center justify-center">
+                      <IconSearch className="w-5 h-5" />
+                    </div>
+                    <p className="mt-3 font-display font-semibold text-ink">Sin resultados para «{q}»</p>
+                    <p className="mt-1 text-[13px] text-muted">Prueba con otro término o</p>
                     <Link
                       to="/ciencia"
                       onClick={onClose}
-                      className="text-primary font-semibold underline underline-offset-4"
+                      className="mt-3 inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-navy text-white text-[13px] font-semibold hover:bg-primary transition-colors"
                     >
-                      explora todas las áreas
+                      Explora áreas <IconArrow className="w-3.5 h-3.5" />
                     </Link>
-                    .
-                  </p>
+                  </div>
                 )}
               </div>
             )}
+            {results &&
+              results.arts.length + results.exps.length + results.sets.length + results.pubs.length > 3 && (
+                <div
+                  className="absolute bottom-0 inset-x-0 h-12 bg-gradient-to-t from-white via-white/85 to-transparent pointer-events-none"
+                  aria-hidden
+                />
+              )}
+          </div>
+          <div className="px-4 sm:px-6 py-3 bg-mist/50 border-t border-line/60 flex items-center justify-between">
+            <p className="font-mono text-[11px] text-muted hidden sm:block">↵ para buscar · ESC para cerrar</p>
+            <button
+              onClick={() => q.trim() && go(`/busqueda?q=${encodeURIComponent(q.trim())}`)}
+              className="w-full sm:w-auto font-display font-semibold text-[13px] text-primary hover:text-primary-deep flex items-center justify-center gap-1.5"
+            >
+              Ver todos los resultados <IconArrow className="w-3.5 h-3.5" />
+            </button>
           </div>
         </div>
       </div>
@@ -250,6 +299,14 @@ export default function Header() {
     setSearchOpen(false);
   }, [location.pathname]);
 
+  useEffect(() => {
+    if (menuOpen) document.body.style.overflow = "hidden";
+    else document.body.style.overflow = "";
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [menuOpen]);
+
   return (
     <>
       <header
@@ -259,11 +316,11 @@ export default function Header() {
             : "bg-paper/80 backdrop-blur-sm border-b border-transparent"
         }`}
       >
-        <div className="max-w-7xl mx-auto px-5 md:px-8 h-16 md:h-[74px] flex items-center justify-between gap-4">
-          <Link to="/" className="flex items-center gap-2.5 group shrink-0" aria-label="BioNexo — inicio">
+        <div className="max-w-7xl mx-auto px-4 sm:px-4 sm:px-5 md:px-8 h-16 md:h-[74px] flex items-center justify-between gap-3 sm:gap-4">
+          <Link to="/" className="flex items-center gap-2.5 group shrink-0" aria-label="BiolNexo — inicio">
             <LogoMark className="w-9 h-9 transition-transform duration-500 group-hover:rotate-[18deg]" />
             <span className="font-display text-[22px] font-bold tracking-tight text-ink">
-              Bio<span className="text-primary">Nexo</span>
+              Biol<span className="text-primary">Nexo</span>
             </span>
           </Link>
 
@@ -316,7 +373,7 @@ export default function Header() {
         {/* Menú móvil */}
         <div
           className={`lg:hidden overflow-hidden transition-[max-height,opacity] duration-400 ease-out ${
-            menuOpen ? "max-h-[560px] opacity-100" : "max-h-0 opacity-0"
+            menuOpen ? "max-h-[min(560px,calc(100dvh-64px))] opacity-100 overflow-y-auto scrollbar-hide" : "max-h-0 opacity-0"
           }`}
         >
           <nav className="px-5 pt-2 pb-6 bg-white border-t border-line" aria-label="Móvil">

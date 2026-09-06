@@ -293,3 +293,32 @@ export const IconTiktok = (p: P) => (
     <path d="M13.5 6.5c.8 2 2.5 3.2 5 3.4" />
   </svg>
 );
+
+export const IconX = (p: P) => (
+  <svg {...base(p)} viewBox="0 0 24 24">
+    <path d="M4 4l16 16M20 4L4 20" strokeWidth={1.9} />
+  </svg>
+);
+
+export const IconLinkedin = (p: P) => (
+  <svg {...base(p)}>
+    <rect x="3.5" y="3.5" width="17" height="17" rx="1.8" />
+    <path d="M7.5 10.5v7M7.5 7.5h.1M11 17.5v-7h3c1.2 0 2 0.8 2 2.2v4.8h-3v-4.2c0-.6-.4-1-1-1s-1 .4-1 1v4.2z" />
+  </svg>
+);
+
+export const IconWhatsapp = (p: P) => (
+  <svg {...base(p)}>
+    <path d="M12 3.2a8.2 8.2 0 00-7 12.2L3.5 21l5.7-1.5A8.2 8.2 0 1012 3.2z" />
+    <path d="M8.8 10.2c.2-.5.4-.5.7-.5h.6c.2 0 .4.1.5.4l.7 1.7c.1.3 0 .6-.2.8l-.8.8c-.2.2-.2.5 0 .7.4.7 1 1.4 1.7 1.9.2.2.5.2.7 0l.8-.8c.2-.2.5-.3.8-.2l1.7.7c.3.1.4.3.4.5v.6c0 .3 0 .5-.5.7-.5.2-1.2.3-2 .1a8.5 8.5 0 01-3.4-2A9.2 9.2 0 018.2 11c-.2-.8-.1-1.5.1-2 .1-.2.3-.4.5-.4z" />
+  </svg>
+);
+
+export const IconShare = (p: P) => (
+  <svg {...base(p)}>
+    <circle cx="18" cy="5.5" r="2.5" />
+    <circle cx="6" cy="12" r="2.5" />
+    <circle cx="18" cy="18.5" r="2.5" />
+    <path d="M8.3 11l7.4-4M8.3 13l7.4 4" />
+  </svg>
+);

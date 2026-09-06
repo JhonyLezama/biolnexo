@@ -16,7 +16,7 @@ import {
 /* -------------------------------- SOBRE -------------------------------- */
 
 export function SobrePage() {
-  usePageTitle("Sobre BioNexo — Ciencia • Tecnología • Ingeniería");
+  usePageTitle("Sobre BiolNexo — Ciencia • Tecnología • Ingeniería");
 
   const phases = [
     {
@@ -35,7 +35,7 @@ export function SobrePage() {
       fase: "Fase 03",
       estado: "Planificado",
       title: "API y datos vivos",
-      desc: "API pública, autenticación, datasets propios de BioNexo Labs y visualizaciones conectadas a fuentes en tiempo real.",
+      desc: "API pública, autenticación, datasets propios de BiolNexo Labs y visualizaciones conectadas a fuentes en tiempo real.",
     },
     {
       fase: "Fase 04",
@@ -49,15 +49,15 @@ export function SobrePage() {
     <main className="pb-24">
       <section className="relative bg-white border-b border-line overflow-hidden">
         <div className="absolute inset-0 grid-dots [mask-image:linear-gradient(to_bottom,black,transparent)]" aria-hidden />
-        <div className="relative max-w-7xl mx-auto px-5 md:px-8 pt-32 md:pt-40 pb-14">
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-5 md:px-8 pt-32 md:pt-40 pb-14">
           <Reveal>
-            <p className="font-mono text-[11px] uppercase tracking-[0.24em] text-primary">[ Sobre BioNexo ]</p>
-            <h1 className="mt-4 font-display font-bold text-4xl md:text-[3.4rem] tracking-tight text-ink leading-[1.06] max-w-3xl">
+            <p className="font-mono text-[11px] uppercase tracking-[0.24em] text-primary">[ Sobre BiolNexo ]</p>
+            <h1 className="mt-4 font-display font-bold text-[clamp(1.75rem,7vw,2.25rem)] md:text-[3.4rem] tracking-tight text-ink leading-[1.06] max-w-3xl">
               Conectamos conocimiento, datos y tecnología para{" "}
               <span className="text-primary">comprender la ciencia</span>.
             </h1>
             <p className="mt-6 text-[16px] md:text-lg leading-relaxed text-inksoft max-w-2xl">
-              BioNexo nace de una convicción simple: la biología moderna ya no se escribe solo en
+              BiolNexo nace de una convicción simple: la biología moderna ya no se escribe solo en
               el laboratorio — se escribe también en repositorios de datos, notebooks y modelos.
               Somos una plataforma editorial y de datos que cubre biología, genética,
               bioinformática, biotecnología, IA científica, ecología e ingeniería, con una regla
@@ -67,7 +67,7 @@ export function SobrePage() {
         </div>
       </section>
 
-      <section className="max-w-7xl mx-auto px-5 md:px-8 pt-16 md:pt-20">
+      <section className="max-w-7xl mx-auto px-4 sm:px-5 md:px-8 pt-16 md:pt-20">
         <SectionHead
           index="01"
           eyebrow="Principios"
@@ -79,7 +79,7 @@ export function SobrePage() {
             {
               n: "01",
               t: "Niveles explícitos",
-              d: "Cada contenido declara si es investigación publicada, interpretación BioNexo o divulgación. Nunca mezclamos los planos.",
+              d: "Cada contenido declara si es investigación publicada, interpretación BiolNexo o divulgación. Nunca mezclamos los planos.",
             },
             {
               n: "02",
@@ -103,7 +103,7 @@ export function SobrePage() {
         </div>
       </section>
 
-      <section className="max-w-7xl mx-auto px-5 md:px-8 pt-20">
+      <section className="max-w-7xl mx-auto px-4 sm:px-5 md:px-8 pt-20">
         <SectionHead
           index="02"
           eyebrow="Niveles de contenido"
@@ -118,7 +118,7 @@ export function SobrePage() {
               </p>
             </div>
             <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-6">
-              <TierBadge tier="Interpretación BioNexo" />
+              <TierBadge tier="Interpretación BiolNexo" />
               <p className="text-[14px] text-inksoft leading-relaxed">
                 Análisis y opinión editorial del equipo sobre ciencia publicada, con fuentes primarias.
               </p>
@@ -133,12 +133,12 @@ export function SobrePage() {
         </Reveal>
       </section>
 
-      <section className="max-w-7xl mx-auto px-5 md:px-8 pt-20">
+      <section className="max-w-7xl mx-auto px-4 sm:px-5 md:px-8 pt-20">
         <SectionHead
           index="03"
           eyebrow="Hoja de ruta"
           title="Una plataforma pensada para crecer"
-          lead="BioNexo está diseñada desde el día uno como plataforma escalable: frontend público separado del futuro panel administrativo, modelo de datos tipado y arquitectura lista para API, CMS y autenticación."
+          lead="BiolNexo está diseñada desde el día uno como plataforma escalable: frontend público separado del futuro panel administrativo, modelo de datos tipado y arquitectura lista para API, CMS y autenticación."
         />
         <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
           {phases.map((ph, i) => (
@@ -161,8 +161,8 @@ export function SobrePage() {
         </div>
       </section>
 
-      <section className="max-w-7xl mx-auto px-5 md:px-8 pt-20">
-        <SectionHead index="04" eyebrow="Equipo editorial" title="Quiénes escriben BioNexo" />
+      <section className="max-w-7xl mx-auto px-4 sm:px-5 md:px-8 pt-20">
+        <SectionHead index="04" eyebrow="Equipo editorial" title="Quiénes escriben BiolNexo" />
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-5">
           {authors.map((a, i) => (
             <Reveal key={a.id} delay={i * 70}>
@@ -179,12 +179,12 @@ export function SobrePage() {
         </div>
       </section>
 
-      <section className="max-w-7xl mx-auto px-5 md:px-8 pt-20">
+      <section className="max-w-7xl mx-auto px-4 sm:px-5 md:px-8 pt-20">
         <Reveal>
           <div className="bg-primary-deep rounded-xl p-8 md:p-10 flex flex-col md:flex-row items-start md:items-center justify-between gap-6 relative overflow-hidden">
             <div className="absolute inset-0 grid-dots-dark opacity-50" aria-hidden />
             <div className="relative">
-              <h2 className="font-display font-bold text-2xl md:text-3xl text-white">¿Quieres construir BioNexo con nosotros?</h2>
+              <h2 className="font-display font-bold text-2xl md:text-3xl text-white">¿Quieres construir BiolNexo con nosotros?</h2>
               <p className="mt-2 text-[14.5px] text-[#b6c9dc]">Buscamos autores, revisores y aliados institucionales.</p>
             </div>
             <Link to="/contacto" className={`${btn.light} relative shrink-0`}>
@@ -200,8 +200,8 @@ export function SobrePage() {
 /* ------------------------------- CONTACTO ------------------------------- */
 
 export function ContactoPage() {
-  usePageTitle("Contacto — BioNexo");
-  const [form, setForm] = useState({ nombre: "", email: "", asunto: "Colaborar con BioNexo", mensaje: "" });
+  usePageTitle("Contacto — BiolNexo");
+  const [form, setForm] = useState({ nombre: "", email: "", asunto: "Colaborar con BiolNexo", mensaje: "" });
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [sent, setSent] = useState<string | null>(null);
 
@@ -224,21 +224,21 @@ export function ContactoPage() {
     <main className="pb-24">
       <section className="relative bg-navy overflow-hidden">
         <div className="absolute inset-0 grid-dots-dark opacity-60" aria-hidden />
-        <div className="relative max-w-7xl mx-auto px-5 md:px-8 pt-32 md:pt-36 pb-14">
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-5 md:px-8 pt-32 md:pt-36 pb-14">
           <Reveal>
             <p className="font-mono text-[11px] uppercase tracking-[0.24em] text-aqua">[ Contacto ]</p>
-            <h1 className="mt-4 font-display font-bold text-4xl md:text-5xl tracking-tight text-white max-w-2xl leading-[1.08]">
+            <h1 className="mt-4 font-display font-bold text-[clamp(1.75rem,7vw,2.25rem)] md:text-5xl tracking-tight text-white max-w-2xl leading-[1.08]">
               Hablemos de ciencia.
             </h1>
             <p className="mt-5 text-[15.5px] leading-relaxed text-[#9db4ca] max-w-xl">
               Colaboraciones, envío de investigaciones, sugerencias de datasets, prensa o dudas:
-              este es el canal directo con el equipo de BioNexo.
+              este es el canal directo con el equipo de BiolNexo.
             </p>
           </Reveal>
         </div>
       </section>
 
-      <section className="max-w-7xl mx-auto px-5 md:px-8 pt-12 md:pt-16 grid lg:grid-cols-[1.3fr_1fr] gap-10">
+      <section className="max-w-7xl mx-auto px-4 sm:px-5 md:px-8 pt-12 md:pt-16 grid lg:grid-cols-[1.3fr_1fr] gap-10">
         <Reveal>
           {sent ? (
             <div className="bg-white border border-bio/40 rounded-lg p-10 text-center">
@@ -256,7 +256,7 @@ export function ContactoPage() {
               <button
                 onClick={() => {
                   setSent(null);
-                  setForm({ nombre: "", email: "", asunto: "Colaborar con BioNexo", mensaje: "" });
+                  setForm({ nombre: "", email: "", asunto: "Colaborar con BiolNexo", mensaje: "" });
                 }}
                 className="mt-6 font-display font-semibold text-[14px] text-primary hover:text-primary-deep transition-colors"
               >
@@ -280,7 +280,7 @@ export function ContactoPage() {
               <div className="mt-5">
                 <label htmlFor="c-asunto" className="block font-mono text-[11px] uppercase tracking-[0.16em] text-muted mb-2">Asunto</label>
                 <select id="c-asunto" value={form.asunto} onChange={(e) => setForm({ ...form, asunto: e.target.value })} className={field}>
-                  {["Colaborar con BioNexo", "Enviar una investigación", "Sugerir un dataset", "Proponer un experimento", "Prensa", "Otro"].map((o) => (
+                  {["Colaborar con BiolNexo", "Enviar una investigación", "Sugerir un dataset", "Proponer un experimento", "Prensa", "Otro"].map((o) => (
                     <option key={o}>{o}</option>
                   ))}
                 </select>
@@ -305,7 +305,7 @@ export function ContactoPage() {
               </span>
               <div>
                 <p className="font-display font-semibold text-[15px] text-ink">Correo directo</p>
-                <p className="font-mono text-[12.5px] text-muted">hola@bionexo.demo</p>
+                <a href="mailto:biolnexo@gmail.com" className="font-mono text-[12.5px] text-primary hover:text-primary-deep underline underline-offset-4">biolnexo@gmail.com</a>
               </div>
             </div>
           </Reveal>
@@ -315,10 +315,10 @@ export function ContactoPage() {
                 <LogoMark className="w-6 h-6" />
               </span>
               <div>
-                <p className="font-display font-semibold text-[15px] text-ink">Redes de BioNexo</p>
+                <p className="font-display font-semibold text-[15px] text-ink">Redes de BiolNexo</p>
                 <div className="mt-2 flex gap-2">
                   {[
-                    { Icon: IconFacebook, href: "https://www.facebook.com", label: "Facebook" },
+                    { Icon: IconFacebook, href: "https://web.facebook.com/profile.php?id=61594219768551", label: "Facebook" },
                     { Icon: IconInstagram, href: "https://www.instagram.com", label: "Instagram" },
                     { Icon: IconYoutube, href: "https://www.youtube.com", label: "YouTube" },
                     { Icon: IconTiktok, href: "https://www.tiktok.com", label: "TikTok" },
@@ -353,11 +353,11 @@ export function ContactoPage() {
 /* ------------------------------ PRIVACIDAD ------------------------------ */
 
 export function PrivacidadPage() {
-  usePageTitle("Política de privacidad — BioNexo");
+  usePageTitle("Política de privacidad — BiolNexo");
   const sections = [
     {
       t: "Este sitio es una demostración",
-      d: "BioNexo, en su estado actual, es una interfaz de demostración. Los formularios (boletín, contacto) validan datos localmente y no los envían ni almacenan en ningún servidor.",
+      d: "BiolNexo, en su estado actual, es una interfaz de demostración. Los formularios (boletín, contacto) validan datos localmente y no los envían ni almacenan en ningún servidor.",
     },
     {
       t: "Datos que no recopilamos",
@@ -376,17 +376,17 @@ export function PrivacidadPage() {
     <main className="pb-24">
       <section className="relative bg-white border-b border-line overflow-hidden">
         <div className="absolute inset-0 grid-dots [mask-image:linear-gradient(to_bottom,black,transparent)]" aria-hidden />
-        <div className="relative max-w-4xl mx-auto px-5 md:px-8 pt-32 md:pt-36 pb-12">
+        <div className="relative max-w-4xl mx-auto px-4 sm:px-5 md:px-8 pt-32 md:pt-36 pb-12">
           <Reveal>
             <p className="font-mono text-[11px] uppercase tracking-[0.24em] text-primary">[ Legal ]</p>
-            <h1 className="mt-4 font-display font-bold text-4xl md:text-5xl tracking-tight text-ink">
+            <h1 className="mt-4 font-display font-bold text-[clamp(1.75rem,7vw,2.25rem)] md:text-5xl tracking-tight text-ink">
               Política de privacidad
             </h1>
             <p className="mt-4 font-mono text-[12px] text-muted">Última actualización: enero de 2026</p>
           </Reveal>
         </div>
       </section>
-      <section className="max-w-4xl mx-auto px-5 md:px-8 pt-12 space-y-5">
+      <section className="max-w-4xl mx-auto px-4 sm:px-5 md:px-8 pt-12 space-y-5">
         {sections.map((s, i) => (
           <Reveal key={s.t} delay={i * 70}>
             <div className="bg-white border border-line rounded-lg p-7">
@@ -409,7 +409,7 @@ export function PrivacidadPage() {
 /* -------------------------------- 404 -------------------------------- */
 
 export function NotFoundPage() {
-  usePageTitle("404 — Secuencia no encontrada · BioNexo");
+  usePageTitle("404 — Secuencia no encontrada · BiolNexo");
   return (
     <main className="max-w-3xl mx-auto px-5 pt-40 pb-28 text-center">
       <Reveal>
@@ -420,7 +420,7 @@ export function NotFoundPage() {
           Error 404
         </h1>
         <p className="mt-4 text-[16px] text-inksoft max-w-md mx-auto leading-relaxed">
-          Esta secuencia no existe en el genoma de BioNexo. Puede que el enlace haya mutado o que
+          Esta secuencia no existe en el genoma de BiolNexo. Puede que el enlace haya mutado o que
           la página nunca se haya expresado.
         </p>
         <div className="mt-9 flex flex-wrap justify-center gap-3.5">

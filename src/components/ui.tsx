@@ -84,7 +84,7 @@ export function SectionHead({
             {eyebrow}
           </p>
           <h2
-            className={`font-display text-3xl md:text-[2.6rem] font-bold tracking-tight leading-[1.08] mt-3 ${
+            className={`font-display text-[clamp(1.65rem,6vw,1.875rem)] md:text-[clamp(1.875rem,3vw,2.6rem)] font-bold tracking-tight leading-[1.08] mt-3 ${
               dark ? "text-white" : "text-ink"
             }`}
           >
@@ -116,12 +116,12 @@ export function SectionHead({
   );
 }
 
-/* Insignia de nivel de contenido — pieza central de la trazabilidad BioNexo */
+/* Insignia de nivel de contenido — pieza central de la trazabilidad BiolNexo */
 export function TierBadge({ tier, small = false }: { tier: Tier; small?: boolean }) {
   const styles: Record<Tier, string> = {
     "Investigación publicada":
       "bg-primary/10 text-primary-deep border-primary/30",
-    "Interpretación BioNexo": "bg-bio-soft text-bio border-bio/30",
+    "Interpretación BiolNexo": "bg-bio-soft text-bio border-bio/30",
     "Divulgación científica":
       "bg-aqua-soft text-[#0a7586] border-aqua/35",
   };
@@ -139,11 +139,11 @@ export function TierBadge({ tier, small = false }: { tier: Tier; small?: boolean
 
 export const btn = {
   primary:
-    "inline-flex items-center justify-center gap-2 bg-primary text-white font-display font-semibold rounded-md px-6 py-3.5 text-[15px] transition-all duration-300 hover:bg-primary-deep hover:-translate-y-0.5 hover:shadow-lg hover:shadow-primary/25 active:translate-y-0",
+    "inline-flex items-center justify-center gap-2 bg-primary text-white font-display font-semibold rounded-md px-5 sm:px-6 py-3 sm:py-3.5 text-[14px] sm:text-[15px] min-h-[44px] transition-all duration-300 hover:bg-primary-deep hover:-translate-y-0.5 hover:shadow-lg hover:shadow-primary/25 active:translate-y-0",
   outline:
-    "inline-flex items-center justify-center gap-2 border border-line bg-white text-ink font-display font-semibold rounded-md px-6 py-3.5 text-[15px] transition-all duration-300 hover:border-primary/50 hover:text-primary hover:-translate-y-0.5 hover:shadow-md active:translate-y-0",
+    "inline-flex items-center justify-center gap-2 border border-line bg-white text-ink font-display font-semibold rounded-md px-5 sm:px-6 py-3 sm:py-3.5 text-[14px] sm:text-[15px] min-h-[44px] transition-all duration-300 hover:border-primary/50 hover:text-primary hover:-translate-y-0.5 hover:shadow-md active:translate-y-0",
   light:
-    "inline-flex items-center justify-center gap-2 bg-aqua text-navy font-display font-semibold rounded-md px-6 py-3.5 text-[15px] transition-all duration-300 hover:bg-[#2ec6dd] hover:-translate-y-0.5 hover:shadow-lg hover:shadow-aqua/20 active:translate-y-0",
+    "inline-flex items-center justify-center gap-2 bg-aqua text-navy font-display font-semibold rounded-md px-5 sm:px-6 py-3 sm:py-3.5 text-[14px] sm:text-[15px] min-h-[44px] transition-all duration-300 hover:bg-[#2ec6dd] hover:-translate-y-0.5 hover:shadow-lg hover:shadow-aqua/20 active:translate-y-0",
   ghostDark:
     "inline-flex items-center justify-center gap-2 border border-white/20 text-white font-display font-semibold rounded-md px-6 py-3.5 text-[15px] transition-all duration-300 hover:border-aqua hover:text-aqua hover:-translate-y-0.5 active:translate-y-0",
 };

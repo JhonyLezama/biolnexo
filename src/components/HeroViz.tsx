@@ -51,8 +51,8 @@ export default function HeroViz() {
   }
 
   return (
-    <div className="relative w-full max-w-[560px] mx-auto select-none" aria-hidden>
-      <svg viewBox="0 0 600 600" className="w-full h-auto block">
+    <div className="relative w-full max-w-[520px] sm:max-w-[560px] mx-auto select-none overflow-visible" aria-hidden>
+      <svg viewBox="0 0 600 600" className="w-full h-auto block max-w-full">
         <defs>
           <linearGradient id="strandA" x1="0" y1="0" x2="0" y2="1">
             <stop offset="0%" stopColor="#0FA8C0" />
@@ -125,24 +125,24 @@ export default function HeroViz() {
         </g>
       </svg>
 
-      {/* chips de datos flotantes */}
-      <div className="absolute top-[12%] left-[-2%] sm:left-[-6%] anim-float">
-        <div className="bg-white/95 border border-line rounded-md shadow-lg shadow-navy/8 px-3.5 py-2 font-mono text-[11px] text-primary-deep">
+      {/* chips de datos flotantes - reposicionados para evitar overflow en móvil */}
+      <div className="absolute top-[8%] left-1 sm:left-[-2%] lg:left-[-6%] anim-float max-w-[46%] sm:max-w-none">
+        <div className="bg-white/95 border border-line rounded-md shadow-lg shadow-navy/8 px-2.5 sm:px-3.5 py-1.5 sm:py-2 font-mono text-[10px] sm:text-[11px] text-primary-deep truncate">
           <span className="text-aqua">▸</span> ATG·GCT·AAG·TCC
         </div>
       </div>
-      <div className="absolute top-[30%] right-[-2%] sm:right-[-5%] anim-float-2">
-        <div className="bg-navy text-white rounded-md shadow-lg shadow-navy/20 px-3.5 py-2 font-mono text-[11px]">
+      <div className="absolute top-[28%] right-1 sm:right-[-2%] lg:right-[-5%] anim-float-2 max-w-[46%] sm:max-w-none">
+        <div className="bg-navy text-white rounded-md shadow-lg shadow-navy/20 px-2.5 sm:px-3.5 py-1.5 sm:py-2 font-mono text-[10px] sm:text-[11px] truncate">
           <span className="text-aqua">pLDDT</span> 92.4 · modelo OK
         </div>
       </div>
-      <div className="absolute bottom-[24%] left-[-3%] sm:left-[-7%] anim-float-2">
+      <div className="absolute bottom-[22%] left-1 sm:left-[-3%] lg:left-[-7%] anim-float-2 hidden sm:block">
         <div className="bg-white/95 border border-line rounded-md shadow-lg shadow-navy/8 px-3.5 py-2 font-mono text-[11px] text-bio">
           R² 0.94 <span className="text-muted">· σ 0.003</span>
         </div>
       </div>
-      <div className="absolute bottom-[8%] right-[2%] anim-float">
-        <div className="bg-white/95 border border-line rounded-md shadow-lg shadow-navy/8 px-3.5 py-2 font-mono text-[11px] text-primary-deep">
+      <div className="absolute bottom-[6%] right-1 sm:right-[2%] anim-float max-w-[46%] sm:max-w-none">
+        <div className="bg-white/95 border border-line rounded-md shadow-lg shadow-navy/8 px-2.5 sm:px-3.5 py-1.5 sm:py-2 font-mono text-[10px] sm:text-[11px] text-primary-deep truncate">
           16S rRNA <span className="text-aqua">· 251 pb</span>
         </div>
       </div>

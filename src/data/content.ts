@@ -76,7 +76,7 @@ export const categories: Category[] = [
     name: "Investigación",
     tagline: "Método, evidencia y trazabilidad.",
     description:
-      "Estudios con pregunta científica, metodología, resultados y referencias verificables. La capa más rigurosa de BioNexo.",
+      "Estudios con pregunta científica, metodología, resultados y referencias verificables. La capa más rigurosa de BiolNexo.",
     icon: "microscope",
     tint: "primary",
   },
@@ -143,9 +143,9 @@ export const articles: Article[] = [
     tier: "Divulgación científica",
     featured: true,
     source: {
-      journal: "BioNexo Divulgación",
+      journal: "BiolNexo Divulgación",
       year: 2026,
-      doi: "10.5281/bionexo.demo.0012",
+      doi: "10.5281/biolnexo.demo.0012",
       url: "https://www.rcsb.org",
       license: "CC BY-NC 4.0",
       type: "Artículo de divulgación basado en literatura revisada por pares",
@@ -194,7 +194,7 @@ export const articles: Article[] = [
       },
       {
         type: "note",
-        text: "Este artículo es contenido de demostración de BioNexo: resume conocimiento establecido y no reporta resultados nuevos.",
+        text: "Este artículo es contenido de demostración de BiolNexo: resume conocimiento establecido y no reporta resultados nuevos.",
       },
     ],
     references: [
@@ -216,12 +216,12 @@ export const articles: Article[] = [
     imageCaption:
       "Representación conceptual de una red neuronal integrada con una doble hélice de ADN.",
     tags: ["IA", "deep learning", "AlphaFold", "descubrimiento"],
-    tier: "Interpretación BioNexo",
+    tier: "Interpretación BiolNexo",
     featured: true,
     source: {
-      journal: "BioNexo Análisis",
+      journal: "BiolNexo Análisis",
       year: 2026,
-      doi: "10.5281/bionexo.demo.0021",
+      doi: "10.5281/biolnexo.demo.0021",
       url: "https://alphafold.ebi.ac.uk",
       license: "CC BY-NC 4.0",
       type: "Análisis editorial con interpretación propia",
@@ -250,7 +250,7 @@ export const articles: Article[] = [
       },
       {
         type: "p",
-        text: "Un modelo no reemplaza al método científico: lo acelera en etapas específicas. Las predicciones de estructura para complejos dinámicos, regiones intrínsecamente desordenadas o estados raros siguen siendo difíciles. Y toda predicción necesita validación experimental. La regla práctica que usamos en BioNexo: la IA propone, el experimento dispone.",
+        text: "Un modelo no reemplaza al método científico: lo acelera en etapas específicas. Las predicciones de estructura para complejos dinámicos, regiones intrínsecamente desordenadas o estados raros siguen siendo difíciles. Y toda predicción necesita validación experimental. La regla práctica que usamos en BiolNexo: la IA propone, el experimento dispone.",
       },
       {
         type: "quote",
@@ -287,9 +287,9 @@ export const articles: Article[] = [
     tier: "Divulgación científica",
     featured: true,
     source: {
-      journal: "BioNexo Divulgación",
+      journal: "BiolNexo Divulgación",
       year: 2025,
-      doi: "10.5281/bionexo.demo.0008",
+      doi: "10.5281/biolnexo.demo.0008",
       url: "https://www.ncbi.nlm.nih.gov",
       license: "CC BY-NC 4.0",
       type: "Artículo de divulgación basado en literatura revisada por pares",
@@ -356,9 +356,9 @@ export const articles: Article[] = [
     tier: "Divulgación científica",
     featured: true,
     source: {
-      journal: "BioNexo Divulgación",
+      journal: "BiolNexo Divulgación",
       year: 2025,
-      doi: "10.5281/bionexo.demo.0034",
+      doi: "10.5281/biolnexo.demo.0034",
       url: "https://www.uniprot.org",
       license: "CC BY-NC 4.0",
       type: "Artículo de divulgación basado en literatura revisada por pares",
@@ -413,11 +413,11 @@ export const articles: Article[] = [
     imageCaption:
       "Concepto molecular de edición genética: el complejo proteína-ARN cortando una doble hélice.",
     tags: ["CRISPR", "edición genética", "genómica", "terapia"],
-    tier: "Interpretación BioNexo",
+    tier: "Interpretación BiolNexo",
     source: {
-      journal: "BioNexo Análisis",
+      journal: "BiolNexo Análisis",
       year: 2025,
-      doi: "10.5281/bionexo.demo.0041",
+      doi: "10.5281/biolnexo.demo.0041",
       url: "https://www.nobelprize.org",
       license: "CC BY-NC 4.0",
       type: "Análisis editorial con interpretación propia",
@@ -484,9 +484,9 @@ export const articles: Article[] = [
     tags: ["ecología", "sensores", "biodiversidad", "monitoreo"],
     tier: "Divulgación científica",
     source: {
-      journal: "BioNexo Divulgación",
+      journal: "BiolNexo Divulgación",
       year: 2025,
-      doi: "10.5281/bionexo.demo.0052",
+      doi: "10.5281/biolnexo.demo.0052",
       url: "https://www.gbif.org",
       license: "CC BY-NC 4.0",
       type: "Artículo de divulgación basado en literatura revisada por pares",
@@ -537,11 +537,11 @@ export const articles: Article[] = [
     imageCaption:
       "Abstracción de visualización de datos: series temporales y magnitudes en un espacio analítico.",
     tags: ["genómica", "costos", "datos", "secuenciación"],
-    tier: "Interpretación BioNexo",
+    tier: "Interpretación BiolNexo",
     source: {
-      journal: "BioNexo Análisis",
+      journal: "BiolNexo Análisis",
       year: 2025,
-      doi: "10.5281/bionexo.demo.0063",
+      doi: "10.5281/biolnexo.demo.0063",
       url: "https://www.genome.gov",
       license: "CC BY-NC 4.0",
       type: "Análisis editorial con interpretación propia",
@@ -597,11 +597,11 @@ export const articles: Article[] = [
     imageCaption:
       "Hoja bajo análisis digital: puntos de detección sobre tejido vegetal escaneado.",
     tags: ["fitopatología", "visión artificial", "agricultura", "sensores"],
-    tier: "Interpretación BioNexo",
+    tier: "Interpretación BiolNexo",
     source: {
-      journal: "BioNexo Análisis",
+      journal: "BiolNexo Análisis",
       year: 2025,
-      doi: "10.5281/bionexo.demo.0071",
+      doi: "10.5281/biolnexo.demo.0071",
       url: "https://www.fao.org",
       license: "CC BY-NC 4.0",
       type: "Análisis editorial con interpretación propia",
@@ -654,9 +654,9 @@ export const articles: Article[] = [
     tags: ["microscopía", "imagen", "instrumentación", "biología celular"],
     tier: "Divulgación científica",
     source: {
-      journal: "BioNexo Divulgación",
+      journal: "BiolNexo Divulgación",
       year: 2025,
-      doi: "10.5281/bionexo.demo.0084",
+      doi: "10.5281/biolnexo.demo.0084",
       url: "https://www.nobelprize.org",
       license: "CC BY-NC 4.0",
       type: "Artículo de divulgación basado en literatura revisada por pares",
@@ -713,9 +713,9 @@ export const articles: Article[] = [
     tags: ["filogenia", "evolución", "secuencias", "modelos"],
     tier: "Divulgación científica",
     source: {
-      journal: "BioNexo Divulgación",
+      journal: "BiolNexo Divulgación",
       year: 2025,
-      doi: "10.5281/bionexo.demo.0090",
+      doi: "10.5281/biolnexo.demo.0090",
       url: "https://www.ebi.ac.uk",
       license: "CC BY-NC 4.0",
       type: "Artículo de divulgación basado en literatura revisada por pares",
@@ -776,9 +776,9 @@ export const articles: Article[] = [
     tags: ["PCR", "ADN", "diagnóstico", "técnicas"],
     tier: "Divulgación científica",
     source: {
-      journal: "BioNexo Divulgación",
+      journal: "BiolNexo Divulgación",
       year: 2025,
-      doi: "10.5281/bionexo.demo.0096",
+      doi: "10.5281/biolnexo.demo.0096",
       url: "https://www.nobelprize.org",
       license: "CC BY-NC 4.0",
       type: "Artículo de divulgación basado en literatura revisada por pares",
@@ -839,9 +839,9 @@ export const articles: Article[] = [
     tags: ["repositorios", "datos abiertos", "genómica", "infraestructura"],
     tier: "Divulgación científica",
     source: {
-      journal: "BioNexo Divulgación",
+      journal: "BiolNexo Divulgación",
       year: 2025,
-      doi: "10.5281/bionexo.demo.0102",
+      doi: "10.5281/biolnexo.demo.0102",
       url: "https://www.insdc.org",
       license: "CC BY-NC 4.0",
       type: "Artículo de divulgación basado en literatura revisada por pares",
@@ -1173,7 +1173,7 @@ export const datasets: Dataset[] = [
   {
     id: "demo-germinacion",
     name: "Ensayo de germinación — salinidad",
-    org: "BioNexo Labs (demo)",
+    org: "BiolNexo Labs (demo)",
     kind: "Bioensayo · datos tabulares",
     records: "600 observaciones",
     formats: ["CSV"],
@@ -1186,7 +1186,7 @@ export const datasets: Dataset[] = [
   {
     id: "demo-expresion",
     name: "Expresión génica diferencial (demo)",
-    org: "BioNexo Labs (demo)",
+    org: "BiolNexo Labs (demo)",
     kind: "RNA-seq · matriz de expresión",
     records: "18.400 genes × 12 muestras",
     formats: ["CSV", "H5AD"],
@@ -1210,7 +1210,7 @@ export const publications: Publication[] = [
     year: 2025,
     journal: "Revista Latinoamericana de Bioinformática (demo)",
     area: "Genómica computacional",
-    doi: "10.5281/zenodo.bionexo.0001",
+    doi: "10.5281/zenodo.biolnexo.0001",
     question:
       "¿Cómo varía la continuidad y exactitud de los ensamblajes bacterianos al combinar lecturas cortas y largas con tres ensambladores de uso común?",
     methodology:
@@ -1229,7 +1229,7 @@ export const publications: Publication[] = [
     year: 2025,
     journal: "Congreso de Tecnología Aplicada a la Biodiversidad (demo)",
     area: "IA científica",
-    doi: "10.5281/zenodo.bionexo.0002",
+    doi: "10.5281/zenodo.biolnexo.0002",
     question:
       "¿Puede un modelo ligero, ejecutable en teléfonos móviles, clasificar especies arbóreas regionales con precisión útil para monitoreo de campo?",
     methodology:
@@ -1248,7 +1248,7 @@ export const publications: Publication[] = [
     year: 2024,
     journal: "Boletín de Microbiología Aplicada (demo)",
     area: "Microbiología",
-    doi: "10.5281/zenodo.bionexo.0003",
+    doi: "10.5281/zenodo.biolnexo.0003",
     question:
       "¿Difiere la composición de las comunidades bacterianas del suelo entre manejo convencional, integrado y agroecológico en una misma región productiva?",
     methodology:
@@ -1267,7 +1267,7 @@ export const publications: Publication[] = [
     year: 2024,
     journal: "Revista de Ecología Cuantitativa (demo)",
     area: "Ecología",
-    doi: "10.5281/zenodo.bionexo.0004",
+    doi: "10.5281/zenodo.biolnexo.0004",
     question:
       "¿Qué tan robustas son las tendencias poblacionales estimadas desde registros de ciencia ciudadana frente a sesgos de esfuerzo de muestreo?",
     methodology:

@@ -48,10 +48,10 @@ function PageHero({
         style={{ background: "radial-gradient(circle, rgba(15,168,192,0.12), transparent 65%)" }}
         aria-hidden
       />
-      <div className="relative max-w-7xl mx-auto px-5 md:px-8 pt-32 md:pt-36 pb-14 md:pb-16">
+      <div className="relative max-w-7xl mx-auto px-4 sm:px-5 md:px-8 pt-32 md:pt-36 pb-14 md:pb-16">
         <Reveal>
           <p className="font-mono text-[11px] uppercase tracking-[0.24em] text-aqua">[ {eyebrow} ]</p>
-          <h1 className="mt-4 font-display font-bold text-4xl md:text-5xl tracking-tight text-white max-w-3xl leading-[1.08]">
+          <h1 className="mt-4 font-display font-bold text-[clamp(1.75rem,7vw,2.25rem)] md:text-5xl tracking-tight text-white max-w-3xl leading-[1.08]">
             {title}
           </h1>
           <p className="mt-5 text-[15.5px] md:text-lg leading-relaxed text-[#9db4ca] max-w-2xl">
@@ -71,7 +71,7 @@ function ExperimentItem({ ex, open, onToggle }: { ex: Experiment; open: boolean;
       <button
         onClick={onToggle}
         aria-expanded={open}
-        className="w-full text-left px-6 py-5 flex items-center gap-5"
+        className="w-full text-left px-4 sm:px-6 py-4 sm:py-5 flex items-center gap-3 sm:gap-5"
       >
         <span className={`w-11 h-11 rounded-md flex items-center justify-center shrink-0 transition-colors ${open ? "bg-primary text-white" : "bg-mist text-primary"}`}>
           <IconFlask className="w-5 h-5" />
@@ -172,7 +172,7 @@ function ExperimentItem({ ex, open, onToggle }: { ex: Experiment; open: boolean;
 }
 
 export function ExperimentosPage() {
-  usePageTitle("Experimentos — BioNexo");
+  usePageTitle("Experimentos — BiolNexo");
   const [openId, setOpenId] = useState<string | null>(experiments[0].id);
 
   return (
@@ -183,7 +183,7 @@ export function ExperimentosPage() {
         lead="Experimentos educativos y protocolos de investigación documentados paso a paso: objetivo, materiales, procedimiento, resultados, observaciones, explicación y seguridad."
       />
 
-      <section className="max-w-7xl mx-auto px-5 md:px-8 pt-12 md:pt-16">
+      <section className="max-w-7xl mx-auto px-4 sm:px-5 md:px-8 pt-12 md:pt-16">
         <Reveal>
           <div className="grid sm:grid-cols-3 gap-4 mb-8">
             <div className="bg-white border border-line rounded-lg p-5">
@@ -235,7 +235,7 @@ export function ExperimentosPage() {
             <div>
               <p className="font-display font-bold text-xl text-ink">¿Tienes un protocolo que compartir?</p>
               <p className="mt-1.5 text-[14px] text-inksoft">
-                BioNexo crece con la comunidad: envíanos tu experimento documentado y lo revisamos para publicarlo.
+                BiolNexo crece con la comunidad: envíanos tu experimento documentado y lo revisamos para publicarlo.
               </p>
             </div>
             <Link to="/contacto" className={`${btn.primary} shrink-0`}>
@@ -251,7 +251,7 @@ export function ExperimentosPage() {
 /* ------------------------------- DATOS ------------------------------- */
 
 export function DatosPage() {
-  usePageTitle("Datos científicos — BioNexo");
+  usePageTitle("Datos científicos — BiolNexo");
 
   return (
     <main className="pb-24">
@@ -261,20 +261,20 @@ export function DatosPage() {
         lead="Conjuntos de datos biológicos, estadísticas y visualizaciones interactivas. Repositorios reales con enlace directo y datasets de demostración claramente etiquetados."
       />
 
-      <section className="max-w-7xl mx-auto px-5 md:px-8 pt-12 md:pt-16">
+      <section className="max-w-7xl mx-auto px-4 sm:px-5 md:px-8 pt-12 md:pt-16">
         <SectionHead
           index="A"
           eyebrow="Visualizaciones"
           title="La economía y el volumen de la genómica"
           lead="Dos curvas que explican por qué la biología se volvió una ciencia de datos: el costo de secuenciar se desplomó y el volumen de datos públicos no dejó de crecer."
         />
-        <div className="grid lg:grid-cols-2 gap-6">
-          <Reveal>
+        <div className="grid lg:grid-cols-2 gap-6 min-w-0">
+          <Reveal className="min-w-0">
             <ConsoleFrame title="costo_genoma.log — tendencia histórica (ilustrativa, basada en NHGRI)">
               <CostChart data={sequencingCost} />
             </ConsoleFrame>
           </Reveal>
-          <Reveal delay={120}>
+          <Reveal delay={120} className="min-w-0">
             <ConsoleFrame title="datos_genomicos.csv — volumen público estimado (ilustrativo)">
               <GrowthArea data={genomicGrowth} />
             </ConsoleFrame>
@@ -286,7 +286,7 @@ export function DatosPage() {
             index="B"
             eyebrow="Repositorios y datasets"
             title="Dónde están los datos de la vida"
-            lead="Cuatro infraestructuras reales de datos abiertos —más dos datasets de demostración de BioNexo Labs para practicar análisis sin riesgo."
+            lead="Cuatro infraestructuras reales de datos abiertos —más dos datasets de demostración de BiolNexo Labs para practicar análisis sin riesgo."
           />
         </div>
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -302,7 +302,7 @@ export function DatosPage() {
             <div className="bg-white border border-line rounded-lg p-6">
               <p className="font-mono text-[10.5px] uppercase tracking-[0.2em] text-primary">Principios FAIR</p>
               <p className="mt-2.5 text-[13.5px] leading-relaxed text-inksoft">
-                Todo dataset referenciado en BioNexo cumple con ser{" "}
+                Todo dataset referenciado en BiolNexo cumple con ser{" "}
                 <strong>encontrable, accesible, interoperable y reutilizable</strong>. Si un
                 dataset no puede citarse con un identificador estable, lo indicamos explícitamente.
               </p>
@@ -327,7 +327,7 @@ export function DatosPage() {
 /* ---------------------------- INVESTIGACIÓN ---------------------------- */
 
 export function InvestigacionPage() {
-  usePageTitle("Investigación científica — BioNexo");
+  usePageTitle("Investigación científica — BiolNexo");
 
   const tiers = [
     {
@@ -336,7 +336,7 @@ export function InvestigacionPage() {
       req: ["DOI o identificador persistente", "Metodología y datos citables", "Referencias completas"],
     },
     {
-      tier: "Interpretación BioNexo" as const,
+      tier: "Interpretación BiolNexo" as const,
       desc: "Análisis editorial del equipo: contextualizamos ciencia publicada, señalamos límites metodológicos y ofrecemos una lectura crítica propia. Siempre enlazamos las fuentes primarias.",
       req: ["Fuentes primarias enlazadas", "Opinión señalada como tal", "Limitaciones explícitas"],
     },
@@ -352,15 +352,15 @@ export function InvestigacionPage() {
       <PageHero
         eyebrow="Investigación"
         title="Investigación científica con trazabilidad completa"
-        lead="Cada publicación presenta su pregunta, metodología, resultados y DOI. Y cada contenido de la plataforma declara su nivel: investigación publicada, interpretación BioNexo o divulgación."
+        lead="Cada publicación presenta su pregunta, metodología, resultados y DOI. Y cada contenido de la plataforma declara su nivel: investigación publicada, interpretación BiolNexo o divulgación."
       />
 
-      <section className="max-w-7xl mx-auto px-5 md:px-8 pt-12 md:pt-16">
+      <section className="max-w-7xl mx-auto px-4 sm:px-5 md:px-8 pt-12 md:pt-16">
         <SectionHead
           index="A"
           eyebrow="Niveles de contenido"
           title="Siempre sabrás qué estás leyendo"
-          lead="La confianza científica no se declara: se estructura. Estos son los tres niveles de contenido de BioNexo y los requisitos de cada uno."
+          lead="La confianza científica no se declara: se estructura. Estos son los tres niveles de contenido de BiolNexo y los requisitos de cada uno."
         />
         <div className="space-y-4">
           {tiers.map((t, i) => (
@@ -387,7 +387,7 @@ export function InvestigacionPage() {
             index="B"
             eyebrow="Publicaciones"
             title="Fichas de investigación"
-            lead="Estas fichas de demostración muestran el formato exacto que BioNexo generará para investigaciones reales: pregunta, método, resultados, conclusión y DOI."
+            lead="Estas fichas de demostración muestran el formato exacto que BiolNexo generará para investigaciones reales: pregunta, método, resultados, conclusión y DOI."
           />
         </div>
 
@@ -396,7 +396,7 @@ export function InvestigacionPage() {
             <IconAlert className="w-5 h-5 text-warn shrink-0 mt-0.5" />
             <p className="text-[13.5px] leading-relaxed text-inksoft">
               <strong className="text-warn">Aviso:</strong> las publicaciones listadas son{" "}
-              <em>de demostración</em> — ilustran la ficha editorial de BioNexo y sus DOI no
+              <em>de demostración</em> — ilustran la ficha editorial de BiolNexo y sus DOI no
               resuelven a documentos reales.
             </p>
           </aside>

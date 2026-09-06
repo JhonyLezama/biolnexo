@@ -12,14 +12,14 @@ export function ConsoleFrame({
   className?: string;
 }) {
   return (
-    <div className={`bg-navy-2 border border-white/10 rounded-lg overflow-hidden shadow-xl shadow-navy/30 ${className}`}>
-      <div className="flex items-center gap-2 px-4 py-2.5 border-b border-white/10 bg-navy">
-        <span className="w-2.5 h-2.5 rounded-full bg-[#e0654f]/80" />
-        <span className="w-2.5 h-2.5 rounded-full bg-[#e0a83f]/80" />
-        <span className="w-2.5 h-2.5 rounded-full bg-[#3fbf7f]/80" />
-        <span className="ml-3 font-mono text-[11px] text-[#7e9ab5]">{title}</span>
+    <div className={`bg-navy-2 border border-white/10 rounded-lg overflow-hidden shadow-xl shadow-navy/30 min-w-0 w-full ${className}`}>
+      <div className="flex items-center gap-2 px-3 sm:px-4 py-2.5 border-b border-white/10 bg-navy min-w-0 overflow-hidden">
+        <span className="w-2.5 h-2.5 rounded-full bg-[#e0654f]/80 shrink-0" />
+        <span className="w-2.5 h-2.5 rounded-full bg-[#e0a83f]/80 shrink-0" />
+        <span className="w-2.5 h-2.5 rounded-full bg-[#3fbf7f]/80 shrink-0" />
+        <span className="ml-2 sm:ml-3 font-mono text-[10px] sm:text-[11px] text-[#7e9ab5] truncate min-w-0 flex-1">{title}</span>
       </div>
-      <div className="p-4 md:p-5">{children}</div>
+      <div className="p-3 sm:p-4 md:p-5 min-w-0">{children}</div>
     </div>
   );
 }
@@ -30,23 +30,25 @@ export function CostChart({ data }: { data: ChartPoint[] }) {
   const [active, setActive] = useState<number | null>(null);
   const W = 640;
   const H = 300;
-  const padL = 16;
+  const padL = 10;
   const padB = 34;
   const padT = 30;
   const logs = data.map((d) => Math.log10(d.value));
   const maxL = Math.max(...logs);
   const minL = Math.min(...logs);
-  const barW = 52;
+  const barW = 44;
   const gap = (W - padL * 2 - barW * data.length) / (data.length - 1);
 
   return (
-    <div>
-      <svg
-        viewBox={`0 0 ${W} ${H}`}
-        className="w-full h-auto"
-        role="img"
-        aria-label="Evolución del costo de secuenciar un genoma humano"
-      >
+    <div className="min-w-0 w-full overflow-hidden">
+      <div className="w-full overflow-hidden">
+        <svg
+          viewBox={`0 0 ${W} ${H}`}
+          className="w-full h-auto min-w-0 block"
+          role="img"
+          aria-label="Evolución del costo de secuenciar un genoma humano"
+          preserveAspectRatio="xMidYMid meet"
+        >
         {[0.25, 0.5, 0.75].map((f) => (
           <line
             key={f}
@@ -70,6 +72,7 @@ export function CostChart({ data }: { data: ChartPoint[] }) {
               key={d.label}
               onMouseEnter={() => setActive(i)}
               onMouseLeave={() => setActive(null)}
+              onClick={() => setActive((prev) => (prev === i ? null : i))}
               style={{ cursor: "pointer" }}
             >
               <rect x={x - 8} y={padT - 10} width={barW + 16} height={H - padT - padB + 20} fill="transparent" />
@@ -89,7 +92,7 @@ export function CostChart({ data }: { data: ChartPoint[] }) {
                 y={y - 8}
                 textAnchor="middle"
                 fontFamily="IBM Plex Mono, monospace"
-                fontSize="11"
+                fontSize="9"
                 fill={isActive ? "#0FA8C0" : "#7e9ab5"}
                 opacity={isActive ? 1 : 0}
                 style={{ transition: "opacity .2s" }}
@@ -101,7 +104,7 @@ export function CostChart({ data }: { data: ChartPoint[] }) {
                 y={H - padB + 18}
                 textAnchor="middle"
                 fontFamily="IBM Plex Mono, monospace"
-                fontSize="11.5"
+                fontSize="9.5"
                 fill={isActive ? "#0FA8C0" : "#7e9ab5"}
               >
                 {d.label}
@@ -109,11 +112,12 @@ export function CostChart({ data }: { data: ChartPoint[] }) {
             </g>
           );
         })}
-      </svg>
-      <p className="mt-2 font-mono text-[11.5px] text-[#7e9ab5] min-h-[1.2em]">
+        </svg>
+      </div>
+      <p className="mt-2 font-mono text-[11px] sm:text-[11.5px] leading-snug break-words text-[#7e9ab5] min-h-[2.4em] sm:min-h-[1.2em]">
         {active !== null
           ? `${data[active].label} → ${data[active].display} por genoma`
-          : "Pasa el cursor sobre las barras · escala logarítmica"}
+          : "Toca las barras para ver el costo · escala logarítmica"}
       </p>
     </div>
   );
@@ -152,16 +156,26 @@ export function GrowthArea({ data }: { data: ChartPoint[] }) {
   const [hx, hy] = hover !== null ? pt(hover) : [0, 0];
 
   return (
-    <div>
-      <svg
-        ref={svgRef}
-        viewBox={`0 0 ${W} ${H}`}
-        className="w-full h-auto"
-        role="img"
-        aria-label="Crecimiento ilustrativo de datos genómicos públicos"
-        onMouseMove={onMove}
-        onMouseLeave={() => setHover(null)}
-      >
+    <div className="min-w-0 w-full overflow-hidden">
+      <div className="w-full overflow-hidden">
+        <svg
+          ref={svgRef}
+          viewBox={`0 0 ${W} ${H}`}
+          className="w-full h-auto min-w-0 block"
+          role="img"
+          aria-label="Crecimiento ilustrativo de datos genómicos públicos"
+          preserveAspectRatio="xMidYMid meet"
+          onMouseMove={onMove}
+          onMouseLeave={() => setHover(null)}
+          onTouchStart={(e) => {
+            const touch = e.touches[0];
+            if (!touch || !svgRef.current) return;
+            const rect = svgRef.current.getBoundingClientRect();
+            const x = ((touch.clientX - rect.left) / rect.width) * W;
+            const idx = Math.round(((x - padL) / (W - padL - padR)) * (data.length - 1));
+            setHover(Math.max(0, Math.min(data.length - 1, idx)));
+          }}
+        >
         <defs>
           <linearGradient id="areaFill" x1="0" y1="0" x2="0" y2="1">
             <stop offset="0%" stopColor="#0FA8C0" stopOpacity="0.32" />
@@ -192,9 +206,10 @@ export function GrowthArea({ data }: { data: ChartPoint[] }) {
             </text>
           </g>
         )}
-      </svg>
-      <p className="mt-2 font-mono text-[11.5px] text-[#7e9ab5]">
-        Volumen ilustrativo de datos genómicos públicos (escala relativa)
+        </svg>
+      </div>
+      <p className="mt-2 font-mono text-[11px] sm:text-[11.5px] leading-snug break-words text-[#7e9ab5]">
+        Volumen ilustrativo de datos genómicos públicos (escala relativa) · toca los puntos
       </p>
     </div>
   );
@@ -227,8 +242,9 @@ const segments: [number, number, number, number][] = [
 export function PhyloTree() {
   const [hover, setHover] = useState<number | null>(null);
   return (
-    <div>
-      <svg viewBox="0 0 560 300" className="w-full h-auto" role="img" aria-label="Árbol filogenético ilustrativo de organismos modelo">
+    <div className="min-w-0">
+      <div className="w-full overflow-x-auto scrollbar-hide -mx-3 px-3 sm:mx-0 sm:px-0">
+        <svg viewBox="0 0 560 300" className="w-full h-auto min-w-[460px] lg:min-w-0" role="img" aria-label="Árbol filogenético ilustrativo de organismos modelo" preserveAspectRatio="xMidYMid meet">
         {segments.map(([x1, y1, x2, y2], i) => (
           <line key={i} x1={x1} y1={y1} x2={x2} y2={y2} stroke="#3f6488" strokeWidth="1.6" />
         ))}
@@ -265,10 +281,11 @@ export function PhyloTree() {
           </g>
         ))}
       </svg>
-      <p className="mt-2 font-mono text-[11.5px] text-[#7e9ab5] min-h-[1.2em]">
+      </div>
+      <p className="mt-2 font-mono text-[11px] sm:text-[11.5px] leading-snug break-words text-[#7e9ab5] min-h-[1.2em]">
         {hover !== null
           ? `${taxa[hover].name} — ${taxa[hover].note}`
-          : "Cladograma ilustrativo · organismos modelo de referencia"}
+          : "Cladograma ilustrativo · desliza en móvil → organismos modelo"}
       </p>
     </div>
   );
@@ -293,27 +310,32 @@ const baseColor: Record<string, string> = {
 export function AlignmentViz() {
   const [col, setCol] = useState<number | null>(null);
   return (
-    <div>
-      <p className="font-mono text-[11px] text-[#7e9ab5] mb-3">
-        Alineamiento múltiple · fragmento ilustrativo (28 pb)
+    <div className="min-w-0">
+      <p className="font-mono text-[11px] text-[#7e9ab5] mb-3 leading-snug break-words">
+        Alineamiento múltiple · fragmento ilustrativo (28 pb) <span className="text-aqua lg:hidden">› toca una columna</span>
       </p>
-      <div className="space-y-1.5 overflow-x-auto pb-1">
+      {/* Grid responsive: en móvil 2 filas de 14 bases para evitar scroll */}
+      <div className="grid gap-2 sm:gap-1.5">
         {alignmentRows.map((row) => (
-          <div key={row.taxon} className="flex items-center gap-3 min-w-[420px]">
-            <span className="font-mono text-[10.5px] italic text-[#9db4ca] w-[86px] shrink-0">
+          <div
+            key={row.taxon}
+            className="grid grid-cols-[64px_1fr] sm:grid-cols-[86px_1fr] gap-2 sm:gap-3 items-start sm:items-center min-w-0"
+          >
+            <span className="font-mono text-[10px] sm:text-[10.5px] italic text-[#9db4ca] leading-tight pt-1 sm:pt-0 truncate">
               {row.taxon}
             </span>
-            <div className="flex gap-[3px]">
+            <div className="grid grid-cols-14 gap-[2px] sm:flex sm:flex-wrap sm:gap-[3px] min-w-0">
               {row.seq.split("").map((base, i) => (
                 <span
                   key={i}
                   onMouseEnter={() => setCol(i)}
                   onMouseLeave={() => setCol(null)}
-                  className="w-[15px] h-[22px] rounded-[3px] flex items-center justify-center font-mono text-[11px] font-semibold text-navy transition-transform duration-150"
+                  onClick={() => setCol((prev) => (prev === i ? null : i))}
+                  className="w-full sm:w-[15px] h-[19px] sm:h-[22px] rounded-[3px] flex items-center justify-center font-mono text-[9.5px] sm:text-[11px] font-semibold text-navy transition-all duration-150 cursor-pointer"
                   style={{
                     background: baseColor[base],
                     opacity: col === null || col === i ? 0.92 : 0.35,
-                    transform: col === i ? "scaleY(1.18)" : undefined,
+                    transform: col === i ? "scaleY(1.12)" : undefined,
                   }}
                 >
                   {base}
@@ -323,13 +345,17 @@ export function AlignmentViz() {
           </div>
         ))}
       </div>
-      <div className="mt-4 flex items-center gap-4 font-mono text-[10.5px] text-[#7e9ab5]">
-        {Object.entries(baseColor).map(([b, c]) => (
-          <span key={b} className="inline-flex items-center gap-1.5">
-            <span className="w-2.5 h-2.5 rounded-[3px]" style={{ background: c }} /> {b}
-          </span>
-        ))}
-        <span className="ml-auto hidden sm:inline">posición {col !== null ? col + 1 : "—"}</span>
+      <div className="mt-4 grid grid-cols-2 sm:flex sm:items-center gap-2 sm:gap-4 font-mono text-[10.5px] text-[#7e9ab5]">
+        <div className="flex flex-wrap gap-3 col-span-2 sm:col-auto">
+          {Object.entries(baseColor).map(([b, c]) => (
+            <span key={b} className="inline-flex items-center gap-1.5">
+              <span className="w-2.5 h-2.5 rounded-[3px]" style={{ background: c }} /> {b}
+            </span>
+          ))}
+        </div>
+        <span className="text-aqua sm:ml-auto text-[11px]">
+          pos {col !== null ? col + 1 : "—"} / 28
+        </span>
       </div>
     </div>
   );

@@ -28,11 +28,13 @@
 
 html {
   scroll-behavior: smooth;
+  overflow-x: clip;
 }
 
 body {
   @apply bg-paper text-ink font-body antialiased;
   text-rendering: optimizeLegibility;
+  overflow-x: clip;
 }
 
 ::selection {
@@ -131,6 +133,18 @@ body {
   to {
     transform: scaleY(1);
   }
+}
+
+/* ---------- responsive helpers ---------- */
+.scrollbar-hide {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+.scroll-indicator {
+  background: linear-gradient(to right, transparent, rgba(11, 28, 44, 0.06));
 }
 
 /* ---------- motion utilities ---------- */

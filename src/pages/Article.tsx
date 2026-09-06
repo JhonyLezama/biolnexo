@@ -18,7 +18,12 @@ import {
   IconCheck,
   IconCopy,
   IconExternal,
+  IconFacebook,
+  IconLinkedin,
   IconQuote,
+  IconShare,
+  IconWhatsapp,
+  IconX,
 } from "../components/icons";
 
 function useCopy() {
@@ -55,6 +60,82 @@ function useReadingProgress() {
   return p;
 }
 
+function ShareButtons({ title, url, size = "md" }: { title: string; url: string; size?: "sm" | "md" }) {
+  const encTitle = encodeURIComponent(title);
+  const encUrl = encodeURIComponent(url);
+  const encText = encodeURIComponent(`${title} — BiolNexo\n${url}`);
+
+  const items = [
+    {
+      label: "X",
+      href: `https://twitter.com/intent/tweet?text=${encTitle}&url=${encUrl}`,
+      Icon: IconX,
+      bg: "hover:bg-[#0f1419] hover:text-white hover:border-[#0f1419] bg-white text-ink border-line",
+    },
+    {
+      label: "Facebook",
+      href: `https://www.facebook.com/sharer/sharer.php?u=${encUrl}`,
+      Icon: IconFacebook,
+      bg: "hover:bg-[#1877F2] hover:text-white hover:border-[#1877F2] bg-white text-[#1877F2] border-line",
+    },
+    {
+      label: "LinkedIn",
+      href: `https://www.linkedin.com/sharing/share-offsite/?url=${encUrl}`,
+      Icon: IconLinkedin,
+      bg: "hover:bg-[#0A66C2] hover:text-white hover:border-[#0A66C2] bg-white text-[#0A66C2] border-line",
+    },
+    {
+      label: "WhatsApp",
+      href: `https://wa.me/?text=${encText}`,
+      Icon: IconWhatsapp,
+      bg: "hover:bg-[#25D366] hover:text-white hover:border-[#25D366] bg-white text-[#25D366] border-line",
+    },
+  ];
+
+  const handleNativeShare = async () => {
+    if (navigator.share) {
+      try {
+        await navigator.share({ title, text: title, url });
+      } catch {}
+    } else {
+      window.open(items[0].href, "_blank", "noopener,noreferrer");
+    }
+  };
+
+  const btnCls =
+    size === "sm"
+      ? "w-8 h-8 rounded-full border flex items-center justify-center transition-colors duration-200 shrink-0"
+      : "w-10 h-10 rounded-full border flex items-center justify-center transition-colors duration-200 shrink-0";
+
+  return (
+    <div className="flex flex-wrap items-center gap-2">
+      {items.map(({ label, href, Icon, bg }) => (
+        <a
+          key={label}
+          href={href}
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label={`Compartir en ${label}`}
+          title={`Compartir en ${label}`}
+          className={`${btnCls} ${bg}`}
+        >
+          <Icon className={size === "sm" ? "w-4 h-4" : "w-[18px] h-[18px]"} />
+        </a>
+      ))}
+      {typeof navigator !== "undefined" && typeof (navigator as unknown as { share?: (data: ShareData) => Promise<void> }).share === "function" ? (
+        <button
+          onClick={handleNativeShare}
+          aria-label="Compartir"
+          title="Compartir"
+          className={`${btnCls} bg-navy text-white border-navy hover:bg-navy-2`}
+        >
+          <IconShare className={size === "sm" ? "w-4 h-4" : "w-[18px] h-[18px]"} />
+        </button>
+      ) : null}
+    </div>
+  );
+}
+
 function Block({ block }: { block: BodyBlock }) {
   switch (block.type) {
     case "h2":
@@ -89,8 +170,8 @@ function Block({ block }: { block: BodyBlock }) {
       );
     case "table":
       return (
-        <div className="my-8 overflow-x-auto rounded-lg border border-line">
-          <table className="w-full text-left min-w-[480px]">
+        <div className="my-8 overflow-x-auto scrollbar-hide rounded-lg border border-line -mx-4 sm:mx-0">
+          <table className="w-full text-left min-w-[460px] sm:min-w-[480px]">
             <thead>
               <tr className="bg-mist">
                 {block.header?.map((h, i) => (
@@ -116,11 +197,11 @@ function Block({ block }: { block: BodyBlock }) {
       );
     case "sequence":
       return (
-        <div className="my-8 bg-navy rounded-lg p-5 overflow-x-auto">
+        <div className="my-8 bg-navy rounded-lg p-4 sm:p-5 overflow-x-auto scrollbar-hide -mx-4 sm:mx-0">
           <p className="font-mono text-[10.5px] uppercase tracking-[0.18em] text-[#7e9ab5] mb-2.5">
-            {block.label ?? "Secuencia"}
+            {block.label ?? "Secuencia"} <span className="sm:hidden text-aqua normal-case tracking-normal">› desliza</span>
           </p>
-          <p className="font-mono text-[15px] md:text-base tracking-[0.18em] text-aqua whitespace-nowrap">
+          <p className="font-mono text-[13px] sm:text-[15px] md:text-base tracking-[0.14em] sm:tracking-[0.18em] text-aqua whitespace-nowrap">
             {block.text}
           </p>
         </div>
@@ -140,7 +221,7 @@ function Block({ block }: { block: BodyBlock }) {
 export default function ArticlePage() {
   const { slug } = useParams();
   const article = getArticle(slug ?? "");
-  usePageTitle(article ? `${article.title} — BioNexo` : "Artículo no encontrado — BioNexo");
+  usePageTitle(article ? `${article.title} — BiolNexo` : "Artículo no encontrado — BiolNexo");
   const progress = useReadingProgress();
   const { copied: citeCopied, copy: copyCite } = useCopy();
   const { copied: linkCopied, copy: copyLink } = useCopy();
@@ -160,7 +241,7 @@ export default function ArticlePage() {
   }
 
   const author = getAuthor(article.authorId);
-  const citation = `${author.name.replace("Dra. ", "").replace("Dr. ", "").replace("Ing. ", "")} (${article.source.year}). «${article.title}». BioNexo — Ciencia • Tecnología • Ingeniería. https://doi.org/${article.source.doi}`;
+  const citation = `${author.name.replace("Dra. ", "").replace("Dr. ", "").replace("Ing. ", "")} (${article.source.year}). «${article.title}». BiolNexo — Ciencia • Tecnología • Ingeniería. https://doi.org/${article.source.doi}`;
 
   return (
     <main className="pb-24">
@@ -172,7 +253,7 @@ export default function ArticlePage() {
       {/* Encabezado del artículo */}
       <header className="relative bg-white border-b border-line overflow-hidden">
         <div className="absolute inset-0 grid-dots [mask-image:linear-gradient(to_bottom,black,transparent)] opacity-70" aria-hidden />
-        <div className="relative max-w-7xl mx-auto px-5 md:px-8 pt-32 md:pt-36 pb-10 md:pb-14">
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-4 sm:px-5 md:px-8 pt-28 sm:pt-32 md:pt-36 pb-10 md:pb-14">
           <Reveal>
             <nav aria-label="Ruta" className="font-mono text-[11.5px] text-muted">
               <Link to="/" className="hover:text-primary transition-colors">Inicio</Link>
@@ -192,7 +273,7 @@ export default function ArticlePage() {
               </Link>
               <TierBadge tier={article.tier} />
             </div>
-            <h1 className="mt-5 font-display font-bold text-3xl md:text-[3.1rem] leading-[1.1] tracking-[-0.015em] text-ink max-w-4xl">
+            <h1 className="mt-5 font-display font-bold text-[clamp(1.7rem,7vw,1.875rem)] md:text-[clamp(1.9rem,4vw,3.1rem)] leading-[1.1] tracking-[-0.015em] text-ink max-w-4xl">
               {article.title}
             </h1>
             <p className="mt-5 text-[16.5px] md:text-lg leading-relaxed text-inksoft max-w-3xl">
@@ -226,12 +307,19 @@ export default function ArticlePage() {
                 ))}
               </div>
             </div>
+            {/* Compartir inline header */}
+            <div className="mt-6 flex flex-wrap items-center gap-3 pt-6 border-t border-line/60">
+              <span className="font-mono text-[11px] uppercase tracking-[0.14em] text-muted flex items-center gap-1.5">
+                <IconShare className="w-3.5 h-3.5" /> Compartir
+              </span>
+              <ShareButtons title={article.title} url={typeof window !== "undefined" ? window.location.href : `https://biolnexo.demo/articulo/${article.slug}`} size="sm" />
+            </div>
           </Reveal>
         </div>
       </header>
 
       {/* Imagen principal */}
-      <div className="max-w-7xl mx-auto px-5 md:px-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-4 sm:px-5 md:px-8">
         <Reveal className="-mb-2">
           <figure className="mt-10">
             <div className="rounded-xl overflow-hidden border border-line shadow-xl shadow-navy/8">
@@ -249,7 +337,7 @@ export default function ArticlePage() {
             <IconBook className="w-5 h-5 text-[#0a7586] shrink-0 mt-0.5" />
             <p className="text-[13.5px] leading-relaxed text-inksoft">
               <strong className="text-[#0a7586]">Contenido de demostración.</strong>{" "}
-              Este artículo ilustra el formato editorial de BioNexo y resume
+              Este artículo ilustra el formato editorial de BiolNexo y resume
               conocimiento científico establecido; no reporta resultados nuevos.
             </p>
           </aside>
@@ -294,6 +382,17 @@ export default function ArticlePage() {
                 ))}
               </ol>
             </section>
+
+            {/* Compartir al cierre del artículo */}
+            <div className="mt-10 p-5 sm:p-6 bg-white border border-line rounded-xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+              <div>
+                <p className="font-display font-semibold text-ink flex items-center gap-2">
+                  <IconShare className="w-4 h-4 text-primary" /> ¿Te resultó útil?
+                </p>
+                <p className="font-mono text-[11px] text-muted mt-1">Compártelo en tus redes</p>
+              </div>
+              <ShareButtons title={article.title} url={typeof window !== "undefined" ? window.location.href : `https://biolnexo.demo/articulo/${article.slug}`} />
+            </div>
           </article>
 
           {/* Barra lateral */}
@@ -370,8 +469,22 @@ export default function ArticlePage() {
                     }`}
                   >
                     {linkCopied ? <IconCheck className="w-4 h-4" /> : <IconArrowUpRight className="w-4 h-4" />}
-                    {linkCopied ? "Enlace copiado" : "Compartir enlace"}
+                    {linkCopied ? "Enlace copiado" : "Copiar enlace"}
                   </button>
+                </div>
+              </Reveal>
+
+              {/* Compartir en redes */}
+              <Reveal delay={110}>
+                <div className="bg-white border border-line rounded-lg p-6">
+                  <p className="font-mono text-[10.5px] uppercase tracking-[0.22em] text-muted flex items-center gap-2">
+                    <IconShare className="w-3.5 h-3.5" /> Compartir en redes
+                  </p>
+                  <p className="mt-2 text-[13px] text-inksoft leading-relaxed">Difunde este artículo en tu comunidad.</p>
+                  <div className="mt-4">
+                    <ShareButtons title={article.title} url={typeof window !== "undefined" ? window.location.href : `https://biolnexo.demo/articulo/${article.slug}`} />
+                  </div>
+                  <p className="mt-3 font-mono text-[11px] text-muted">Al compartir, se incluye el enlace directo al artículo.</p>
                 </div>
               </Reveal>
 

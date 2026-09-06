@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 420 80" role="img" aria-label="BiolNexo">
+  <g font-family="Space Grotesk, sans-serif" font-weight="700" font-size="48">
+    <text x="84" y="54" fill="#0B1C2C">Biol<tspan fill="#0E4E8C">Nexo</tspan></text>
+  </g>
+  <g font-family="IBM Plex Mono, monospace" font-size="10" letter-spacing="3">
+    <text x="84" y="72" fill="#0FA8C0">CIENCIA • TECNOLOGÍA • INGENIERÍA</text>
+  </g>
+  <!-- mark -->
+  <g transform="translate(8,8) scale(1.9)">
+    <path d="M16 2.5l11.26 6.5v13L16 28.5 4.74 22V9L16 2.5z" fill="#0E4E8C"/>
+    <path d="M10.5 11.5l5.5 4 5.5 4" stroke="#F4F7FA" stroke-width="1.4" fill="none"/>
+    <circle cx="10.5" cy="11.5" r="2" fill="#F4F7FA"/>
+    <circle cx="16" cy="15.5" r="2" fill="#0FA8C0"/>
+    <circle cx="21.5" cy="19.5" r="2" fill="#2EC48A"/>
+  </g>
+</svg>

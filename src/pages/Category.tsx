@@ -14,7 +14,7 @@ import { IconArrow, IconSearch } from "../components/icons";
 const tiers: (Tier | "Todos")[] = [
   "Todos",
   "Investigación publicada",
-  "Interpretación BioNexo",
+  "Interpretación BiolNexo",
   "Divulgación científica",
 ];
 
@@ -24,7 +24,7 @@ export function TemaPage() {
   const { slug } = useParams();
   const cat = categoryBySlug(slug ?? "");
 
-  usePageTitle(cat ? `${cat.name} — BioNexo` : "Área no encontrada — BioNexo");
+  usePageTitle(cat ? `${cat.name} — BiolNexo` : "Área no encontrada — BiolNexo");
 
   const [sort, setSort] = useState<"recientes" | "az" | "lectura">("recientes");
 
@@ -59,7 +59,7 @@ export function TemaPage() {
       {/* Encabezado del área */}
       <section className="relative bg-white border-b border-line overflow-hidden">
         <div className="absolute inset-0 grid-dots [mask-image:linear-gradient(to_bottom,black,transparent)]" aria-hidden />
-        <div className="relative max-w-7xl mx-auto px-5 md:px-8 pt-32 md:pt-36 pb-12 md:pb-16">
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-5 md:px-8 pt-32 md:pt-36 pb-12 md:pb-16">
           <Reveal>
             <nav aria-label="Ruta" className="font-mono text-[11.5px] text-muted">
               <Link to="/" className="hover:text-primary transition-colors">Inicio</Link>
@@ -75,7 +75,7 @@ export function TemaPage() {
                 }`}>
                   <Icon className="w-7 h-7" />
                 </span>
-                <h1 className="font-display font-bold text-4xl md:text-5xl tracking-tight text-ink">
+                <h1 className="font-display font-bold text-[clamp(1.75rem,7vw,2.25rem)] md:text-5xl tracking-tight text-ink">
                   {cat.name}
                 </h1>
                 <p className="mt-2 font-mono text-[13px] text-primary tracking-wide">
@@ -97,7 +97,7 @@ export function TemaPage() {
       </section>
 
       {/* Contenido */}
-      <section className="max-w-7xl mx-auto px-5 md:px-8 py-14 md:py-20">
+      <section className="max-w-7xl mx-auto px-4 sm:px-5 md:px-8 py-14 md:py-20">
         <div className="flex flex-wrap items-center justify-between gap-4 mb-8">
           <p className="font-mono text-[12px] text-muted">
             Mostrando <span className="text-primary font-semibold">{arts.length}</span> artículos
@@ -140,7 +140,7 @@ export function TemaPage() {
               Área en construcción
             </p>
             <p className="mt-3 text-inksoft max-w-md mx-auto">
-              Este espacio crecerá con el contenido real de BioNexo. Mientras
+              Este espacio crecerá con el contenido real de BiolNexo. Mientras
               tanto, explora las demás áreas de la plataforma.
             </p>
           </div>
@@ -170,7 +170,7 @@ export function TemaPage() {
 /* --------------------------- Hub: /ciencia --------------------------- */
 
 export function CienciaHub() {
-  usePageTitle("Explorar ciencia — BioNexo");
+  usePageTitle("Explorar ciencia — BiolNexo");
   const [q, setQ] = useState("");
   const [cat, setCat] = useState<string>("todas");
   const [tier, setTier] = useState<Tier | "Todos">("Todos");
@@ -194,13 +194,13 @@ export function CienciaHub() {
     <main>
       <section className="relative bg-navy overflow-hidden">
         <div className="absolute inset-0 grid-dots-dark opacity-60" aria-hidden />
-        <div className="relative max-w-7xl mx-auto px-5 md:px-8 pt-32 md:pt-36 pb-14">
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-5 md:px-8 pt-32 md:pt-36 pb-14">
           <Reveal>
             <p className="font-mono text-[11px] uppercase tracking-[0.24em] text-aqua">
               [ Explorador de contenido ]
             </p>
-            <h1 className="mt-4 font-display font-bold text-4xl md:text-5xl tracking-tight text-white max-w-2xl leading-[1.08]">
-              Todo el conocimiento de BioNexo, en un solo lugar.
+            <h1 className="mt-4 font-display font-bold text-[clamp(1.75rem,7vw,2.25rem)] md:text-5xl tracking-tight text-white max-w-2xl leading-[1.08]">
+              Todo el conocimiento de BiolNexo, en un solo lugar.
             </h1>
             <div className="mt-8 max-w-xl flex items-center gap-3 bg-navy-2 border border-white/15 rounded-md px-4 py-1 focus-within:border-aqua transition-colors">
               <IconSearch className="w-5 h-5 text-aqua shrink-0" />
@@ -221,15 +221,15 @@ export function CienciaHub() {
         </div>
       </section>
 
-      <section className="max-w-7xl mx-auto px-5 md:px-8 py-12 md:py-16">
+      <section className="max-w-7xl mx-auto px-4 sm:px-4 sm:px-5 md:px-8 py-12 md:py-16">
         {/* Filtros */}
         <Reveal>
           <div className="flex flex-col gap-4">
-            <div className="flex flex-wrap gap-2">
+            <div className="flex gap-2 overflow-x-auto scrollbar-hide pb-1 -mx-4 px-4 sm:mx-0 sm:px-0 sm:flex-wrap">
               <button
                 onClick={() => setCat("todas")}
                 aria-pressed={cat === "todas"}
-                className={`px-4 py-2 rounded-full border font-mono text-[11.5px] uppercase tracking-wider transition-all ${
+                className={`shrink-0 px-4 py-2 min-h-[36px] rounded-full border font-mono text-[11.5px] uppercase tracking-wider transition-all ${
                   cat === "todas" ? "bg-navy text-aqua border-navy" : "bg-white text-inksoft border-line hover:border-primary/40"
                 }`}
               >
@@ -240,7 +240,7 @@ export function CienciaHub() {
                   key={c.slug}
                   onClick={() => setCat(c.slug)}
                   aria-pressed={cat === c.slug}
-                  className={`px-4 py-2 rounded-full border font-mono text-[11.5px] uppercase tracking-wider transition-all ${
+                  className={`shrink-0 px-4 py-2 min-h-[36px] rounded-full border font-mono text-[11.5px] uppercase tracking-wider transition-all ${
                     cat === c.slug ? "bg-navy text-aqua border-navy" : "bg-white text-inksoft border-line hover:border-primary/40"
                   }`}
                 >
@@ -248,8 +248,8 @@ export function CienciaHub() {
                 </button>
               ))}
             </div>
-            <div className="flex flex-wrap items-center gap-2.5">
-              <span className="font-mono text-[11px] uppercase tracking-wider text-muted mr-1">Nivel:</span>
+            <div className="flex flex-nowrap sm:flex-wrap items-center gap-2.5 overflow-x-auto scrollbar-hide pb-1 -mx-4 px-4 sm:mx-0 sm:px-0">
+              <span className="font-mono text-[11px] uppercase tracking-wider text-muted mr-1 shrink-0">Nivel:</span>
               {tiers.map((t) =>
                 t === "Todos" ? (
                   <button

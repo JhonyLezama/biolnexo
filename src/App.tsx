@@ -8,6 +8,7 @@ import ArticlePage from "./pages/Article";
 import SearchPage from "./pages/Search";
 import { DatosPage, ExperimentosPage, InvestigacionPage } from "./pages/Platforms";
 import { ContactoPage, NotFoundPage, PrivacidadPage, SobrePage } from "./pages/Static";
+import AdminDrafts from "./pages/AdminDrafts";
 
 function ScrollToTop() {
   const { pathname } = useLocation();
@@ -41,6 +42,7 @@ export default function App() {
           <Route path="/sobre" element={<SobrePage />} />
           <Route path="/contacto" element={<ContactoPage />} />
           <Route path="/privacidad" element={<PrivacidadPage />} />
+          <Route path="/admin/borradores" element={<AdminDrafts />} />
           <Route path="*" element={<NotFoundPage />} />
         </Routes>
       </div>

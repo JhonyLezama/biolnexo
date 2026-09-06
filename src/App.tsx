@@ -13,6 +13,7 @@ import AdminDrafts from "./pages/AdminDrafts";
 import AdminLayout from "./pages/admin/AdminLayout";
 import AdminDashboard from "./pages/admin/Dashboard";
 import AdminLogin from "./pages/admin/AdminLogin";
+import AdminArticles from "./pages/admin/Articles";
 import Placeholder from "./pages/admin/Placeholder";
 
 function ScrollToTop() {
@@ -64,7 +65,7 @@ export default function App() {
         <Route path="/admin/*" element={<AdminLayout />}>
           <Route index element={<AdminDashboard />} />
           <Route path="borradores" element={<AdminDrafts />} />
-          <Route path="articulos" element={<Placeholder title="Artículos" desc="CRUD Artículo con editor de bloques (h2/p/list/quote/image/table/sequence/note) — Fase 3" />} />
+          <Route path="articulos" element={<AdminArticles />} />
           <Route path="software" element={<Placeholder title="Software" desc="CRUD SoftwareProject con imagen/video + links descarga/repo — Fase 4" />} />
           <Route path="experimentos" element={<Placeholder title="Experimentos" desc="CRUD Experiment con videoUrl — Fase 4" />} />
           <Route path="categorias" element={<Placeholder title="Categorías" desc="4 slugs + LEGACY_SLUG_MAP — Fase 4" />} />

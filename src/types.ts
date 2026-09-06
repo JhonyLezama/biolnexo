@@ -11,14 +11,33 @@ export type Tier =
   | "Divulgación científica";
 
 export type CategorySlug =
-  | "biologia"
-  | "bioinformatica"
   | "biotecnologia"
-  | "ia-cientifica"
-  | "investigacion"
-  | "ecologia"
-  | "ciencia-datos"
-  | "tecnologia";
+  | "tendencias"
+  | "experimentos-caseros"
+  | "software-salud";
+
+export const LEGACY_SLUG_MAP: Record<string, CategorySlug> = {
+  biologia: "biotecnologia",
+  bioinformatica: "biotecnologia",
+  "ia-cientifica": "tendencias",
+  investigacion: "tendencias",
+  ecologia: "tendencias",
+  "ciencia-datos": "software-salud",
+  tecnologia: "software-salud",
+};
+
+export interface SoftwareProject {
+  slug: string;
+  titulo: string;
+  resumen: string;
+  coverImage?: string;
+  videoUrl?: string;
+  downloadUrl?: string;
+  repoUrl?: string;
+  stack: string[];
+  areaSalud: string;
+  destacado?: boolean;
+}
 
 export interface Category {
   slug: CategorySlug;

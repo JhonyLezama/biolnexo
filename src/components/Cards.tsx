@@ -1,6 +1,6 @@
 import type { ComponentType, SVGProps } from "react";
 import { Link } from "react-router-dom";
-import type { Article, Category, Dataset, Publication } from "../types";
+import type { Article, Category, Dataset, Publication, SoftwareProject } from "../types";
 import { categoryName, fmtDate, getAuthor } from "../data/content";
 import { TierBadge } from "./ui";
 import {
@@ -248,6 +248,88 @@ export function DatasetCard({ dataset }: { dataset: Dataset }) {
             Ver en Datos <IconArrow className="w-3.5 h-3.5" />
           </Link>
         )}
+      </div>
+    </article>
+  );
+}
+
+/* ---------------------------- Software ----------------------------- */
+
+export function SoftwareCard({ project }: { project: SoftwareProject }) {
+  const hasVideo = !!project.videoUrl;
+  return (
+    <article className="group bg-white border border-line rounded-xl overflow-hidden flex flex-col transition-all duration-300 hover:-translate-y-1 hover:border-primary/30 hover:shadow-xl hover:shadow-navy/8">
+      <div className="relative aspect-[16/10] overflow-hidden bg-navy">
+        {project.coverImage ? (
+          <img
+            src={project.coverImage}
+            alt={project.titulo}
+            loading="lazy"
+            className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-[1.05]"
+          />
+        ) : (
+          <div className="w-full h-full bg-gradient-to-br from-navy to-primary/40" />
+        )}
+        <div className="absolute inset-0 bg-gradient-to-t from-navy/60 via-transparent to-transparent" />
+        <span className="absolute top-3 left-3 bg-white/95 text-primary-deep border border-line font-mono text-[10px] uppercase tracking-[0.14em] px-2.5 py-1 rounded-full">
+          {project.areaSalud}
+        </span>
+        {hasVideo && (
+          <span className="absolute bottom-3 right-3 w-8 h-8 rounded-full bg-white/90 text-primary flex items-center justify-center shadow">
+            <IconExternal className="w-4 h-4" />
+          </span>
+        )}
+        {project.destacado && (
+          <span className="absolute top-3 right-3 bg-aqua text-white font-mono text-[10px] px-2 py-1 rounded-full">Destacado</span>
+        )}
+      </div>
+      <div className="p-5 flex flex-col flex-1">
+        <h3 className="font-display font-bold text-[17px] leading-snug text-ink group-hover:text-primary transition-colors line-clamp-2">
+          {project.titulo}
+        </h3>
+        <p className="mt-2 text-[13.5px] leading-relaxed text-inksoft line-clamp-2">{project.resumen}</p>
+        <div className="mt-3 flex flex-wrap gap-1.5">
+          {project.stack.map((s) => (
+            <span key={s} className="font-mono text-[10.5px] bg-mist text-inksoft px-2 py-0.5 rounded-full border border-line">
+              {s}
+            </span>
+          ))}
+        </div>
+        <div className="mt-4 pt-4 border-t border-line grid grid-cols-2 gap-2">
+          {project.downloadUrl ? (
+            <a
+              href={project.downloadUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center justify-center gap-1.5 bg-primary text-white font-display font-semibold text-[13px] rounded-full px-3 py-2 hover:bg-primary-deep transition-colors"
+            >
+              Descargar <IconArrow className="w-3.5 h-3.5" />
+            </a>
+          ) : (
+            <span className="inline-flex items-center justify-center gap-1.5 bg-mist text-muted font-mono text-[11px] rounded-full px-3 py-2">Sin descarga</span>
+          )}
+          {project.repoUrl ? (
+            <a
+              href={project.repoUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center justify-center gap-1.5 bg-white border border-line text-ink font-display font-semibold text-[13px] rounded-full px-3 py-2 hover:border-primary/40 hover:text-primary transition-colors"
+            >
+              Repositorio <IconExternal className="w-3.5 h-3.5" />
+            </a>
+          ) : project.videoUrl ? (
+            <a
+              href={project.videoUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center justify-center gap-1.5 bg-white border border-line text-ink font-semibold text-[13px] rounded-full px-3 py-2 hover:border-primary/40 transition-colors"
+            >
+              Ver video <IconExternal className="w-3.5 h-3.5" />
+            </a>
+          ) : (
+            <span className="inline-flex items-center justify-center text-muted font-mono text-[11px]">—</span>
+          )}
+        </div>
       </div>
     </article>
   );

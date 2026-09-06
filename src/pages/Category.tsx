@@ -7,6 +7,7 @@ import {
   categoryBySlug,
 } from "../data/content";
 import type { Tier } from "../types";
+import { LEGACY_SLUG_MAP } from "../types";
 import { ArticleCard, CategoryCard, catIcons } from "../components/Cards";
 import { Reveal, TierBadge, usePageTitle } from "../components/ui";
 import { IconArrow, IconSearch } from "../components/icons";
@@ -21,8 +22,9 @@ const tiers: (Tier | "Todos")[] = [
 /* ------------------------- Página de categoría ------------------------- */
 
 export function TemaPage() {
-  const { slug } = useParams();
-  const cat = categoryBySlug(slug ?? "");
+  const { slug: rawSlug } = useParams();
+  const slug = rawSlug ? (LEGACY_SLUG_MAP[rawSlug] ?? rawSlug) : "";
+  const cat = categoryBySlug(slug);
 
   usePageTitle(cat ? `${cat.name} — BiolNexo` : "Área no encontrada — BiolNexo");
 
@@ -53,6 +55,7 @@ export function TemaPage() {
 
   const Icon = catIcons[cat.icon];
   const others = categories.filter((c) => c.slug !== cat.slug).slice(0, 4);
+  const isLegacy = rawSlug !== slug && !!LEGACY_SLUG_MAP[rawSlug ?? ""];
 
   return (
     <main>
@@ -61,6 +64,11 @@ export function TemaPage() {
         <div className="absolute inset-0 grid-dots [mask-image:linear-gradient(to_bottom,black,transparent)]" aria-hidden />
         <div className="relative max-w-7xl mx-auto px-4 sm:px-5 md:px-8 pt-32 md:pt-36 pb-12 md:pb-16">
           <Reveal>
+            {isLegacy && (
+              <div className="mb-6 rounded-full bg-aqua-soft border border-aqua/20 px-4 py-2 font-mono text-[11px] text-[#0a7586] inline-flex">
+                Área <span className="font-bold mx-1">{rawSlug}</span> ahora es <span className="font-bold mx-1">{cat.name}</span> — redirigido
+              </div>
+            )}
             <nav aria-label="Ruta" className="font-mono text-[11.5px] text-muted">
               <Link to="/" className="hover:text-primary transition-colors">Inicio</Link>
               <span className="mx-2 text-line">/</span>

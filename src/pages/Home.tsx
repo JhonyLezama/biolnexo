@@ -12,6 +12,7 @@ import {
   publications,
   genomicGrowth,
   sequencingCost,
+  softwareProjects,
   tickerItems,
 } from "../data/content";
 import HeroViz from "../components/HeroViz";
@@ -21,6 +22,7 @@ import {
   DatasetCard,
   FeaturedCard,
   PublicationCard,
+  SoftwareCard,
   catIcons,
 } from "../components/Cards";
 import {
@@ -446,6 +448,24 @@ export default function Home() {
               </Reveal>
             </div>
           </div>
+        </div>
+      </section>
+
+      {/* ============ SOFTWARE & SALUD ============ */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-5 md:px-8 py-20 md:py-28">
+        <SectionHead
+          index="05b"
+          eyebrow="Software"
+          title="Programas que miden tu salud"
+          lead="Herramientas propias de BiolNexo: con captura o video, y links de descarga y repositorio. Hechas para compartir en clase y redes."
+          action={{ to: "/software", label: "Ver todo el software" }}
+        />
+        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          {softwareProjects.slice(0, 3).map((p, i) => (
+            <Reveal key={p.slug} delay={i * 90}>
+              <SoftwareCard project={p} />
+            </Reveal>
+          ))}
         </div>
       </section>
 

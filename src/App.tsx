@@ -7,6 +7,7 @@ import { CienciaHub, TemaPage } from "./pages/Category";
 import ArticlePage from "./pages/Article";
 import SearchPage from "./pages/Search";
 import { DatosPage, ExperimentosPage, InvestigacionPage } from "./pages/Platforms";
+import SoftwarePage from "./pages/Software";
 import { ContactoPage, NotFoundPage, PrivacidadPage, SobrePage } from "./pages/Static";
 import AdminDrafts from "./pages/AdminDrafts";
 
@@ -37,6 +38,7 @@ export default function App() {
           <Route path="/articulo/:slug" element={<ArticlePage />} />
           <Route path="/busqueda" element={<SearchPage />} />
           <Route path="/experimentos" element={<ExperimentosPage />} />
+          <Route path="/software" element={<SoftwarePage />} />
           <Route path="/datos" element={<DatosPage />} />
           <Route path="/investigacion" element={<InvestigacionPage />} />
           <Route path="/sobre" element={<SobrePage />} />

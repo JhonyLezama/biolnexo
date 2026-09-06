@@ -6,6 +6,7 @@ import type {
   Dataset,
   Experiment,
   Publication,
+  SoftwareProject,
 } from "../types";
 
 /* ------------------------------------------------------------------ */
@@ -36,75 +37,39 @@ const IMG = {
 /* ------------------------------------------------------------------ */
 export const categories: Category[] = [
   {
-    slug: "biologia",
-    name: "Biología",
-    tagline: "De la molécula al organismo.",
+    slug: "biotecnologia",
+    name: "Biotecnología",
+    tagline: "Ciencia viva, explicada sin jerga.",
     description:
-      "Biología molecular, genética, microbiología y fisiología: los mecanismos que sostienen la vida, explicados con rigor y claridad.",
+      "CRISPR, fermentación, biofármacos y microbios útiles contados de forma viral: qué es, por qué importa y dónde probarlo en casa o en el lab.",
     icon: "helix",
     tint: "bio",
   },
   {
-    slug: "bioinformatica",
-    name: "Bioinformática",
-    tagline: "Algoritmos que leen la vida.",
+    slug: "tendencias",
+    name: "Tendencias",
+    tagline: "Qué se mueve en bio esta semana.",
     description:
-      "Secuencias, genomas, alineamientos y filogenia. Las herramientas computacionales que convierten datos biológicos en conocimiento.",
-    icon: "terminal",
-    tint: "aqua",
-  },
-  {
-    slug: "biotecnologia",
-    name: "Biotecnología",
-    tagline: "Ingeniería sobre sistemas vivos.",
-    description:
-      "Fermentación, edición genética, bioprocesos y aplicaciones industriales de la biología para resolver problemas reales.",
-    icon: "flask",
-    tint: "bio",
-  },
-  {
-    slug: "ia-cientifica",
-    name: "IA científica",
-    tagline: "Modelos que aprenden de la naturaleza.",
-    description:
-      "Aprendizaje profundo aplicado a estructuras de proteínas, diagnóstico, descubrimiento de fármacos y análisis de datos ómicos.",
-    icon: "chip",
-    tint: "primary",
-  },
-  {
-    slug: "investigacion",
-    name: "Investigación",
-    tagline: "Método, evidencia y trazabilidad.",
-    description:
-      "Estudios con pregunta científica, metodología, resultados y referencias verificables. La capa más rigurosa de BiolNexo.",
-    icon: "microscope",
-    tint: "primary",
-  },
-  {
-    slug: "ecologia",
-    name: "Ecología y biodiversidad",
-    tagline: "Redes de vida en un planeta cambiante.",
-    description:
-      "Ecosistemas, conservación, interacciones entre especies y el papel de los datos ambientales en la toma de decisiones.",
-    icon: "leaf",
-    tint: "bio",
-  },
-  {
-    slug: "ciencia-datos",
-    name: "Ciencia de datos",
-    tagline: "Medir, visualizar, comprender.",
-    description:
-      "Estadística, visualización y análisis de datos aplicados a problemas biológicos: desde genómica hasta ensayos de campo.",
+      "Noticias cortas 4 min sobre genómica, IA bio y salud: hook, qué pasó, por qué importa y qué sigue. Curado 3×/semana por el agente BiolNexo.",
     icon: "chart",
+    tint: "primary",
+  },
+  {
+    slug: "experimentos-caseros",
+    name: "Experimentos caseros",
+    tagline: "Hazlo tú, seguro y visual.",
+    description:
+      "Protocolos friendly para casa/aula o lab: materiales caseros, pasos ≤6, video YouTube y ficha de seguridad. De la fresa al microscopio.",
+    icon: "flask",
     tint: "aqua",
   },
   {
-    slug: "tecnologia",
-    name: "Tecnología e ingeniería",
-    tagline: "Instrumentos que amplían la observación.",
+    slug: "software-salud",
+    name: "Software & Salud",
+    tagline: "Apps y webs que miden tu salud.",
     description:
-      "Sensores, microscopía, automatización de laboratorio y hardware científico: la ingeniería al servicio del descubrimiento.",
-    icon: "gear",
+      "Programas propios de BiolNexo: calculadoras, visores y webs de ciencias. Con captura, video y links de descarga/repositorio.",
+    icon: "terminal",
     tint: "primary",
   },
 ];
@@ -130,7 +95,7 @@ export const articles: Article[] = [
   {
     slug: "proteinas-estructura",
     title: "Una nueva mirada al funcionamiento de las proteínas",
-    category: "biologia",
+    category: "biotecnologia",
     excerpt:
       "La función de una proteína no vive solo en su secuencia: emerge de su forma tridimensional y de su movimiento. Así es como la biología estructural moderna está aprendiendo a verlas en acción.",
     date: "2026-01-18",
@@ -206,7 +171,7 @@ export const articles: Article[] = [
   {
     slug: "ia-transforma-biologia",
     title: "Cómo la inteligencia artificial está transformando la biología",
-    category: "ia-cientifica",
+    category: "tendencias",
     excerpt:
       "Del plegamiento de proteínas al diseño de experimentos, los modelos de aprendizaje profundo se están convirtiendo en instrumentos estándar del laboratorio moderno. Esto es lo que ya pueden hacer — y lo que todavía no.",
     date: "2026-01-10",
@@ -274,7 +239,7 @@ export const articles: Article[] = [
   {
     slug: "lenguaje-genoma",
     title: "El lenguaje oculto de nuestro genoma",
-    category: "bioinformatica",
+    category: "biotecnologia",
     excerpt:
       "Solo una fracción del genoma humano codifica proteínas. El resto está lejos de ser 'ADN basura': regula, organiza y orquesta cuándo y dónde se expresa cada gen. Aprender a leerlo es el gran reto de la genómica.",
     date: "2025-12-28",
@@ -403,7 +368,7 @@ export const articles: Article[] = [
   {
     slug: "crispr-precision",
     title: "Edición genética: precisión, promesas y límites",
-    category: "biologia",
+    category: "biotecnologia",
     excerpt:
       "CRISPR-Cas9 convirtió la edición del genoma en una técnica accesible para miles de laboratorios. Una década después, toca distinguir entre lo que la herramienta ya permite, lo que promete y lo que la biología aún no deja resolver.",
     date: "2025-11-30",
@@ -472,7 +437,7 @@ export const articles: Article[] = [
   {
     slug: "bosques-sensores-datos",
     title: "Escuchar al bosque: sensores y datos en ecología",
-    category: "ecologia",
+    category: "tendencias",
     excerpt:
       "Cámaras trampa, grabadoras acústicas, drones e imágenes satelitales están generando flujos continuos de datos sobre biodiversidad. La ecología se convierte, cada vez más, en una ciencia de observación distribuida.",
     date: "2025-11-16",
@@ -527,7 +492,7 @@ export const articles: Article[] = [
   {
     slug: "economia-genoma",
     title: "De 100 millones a 200 dólares: la economía del genoma",
-    category: "ciencia-datos",
+    category: "tendencias",
     excerpt:
       "Secuenciar un genoma humano costó cerca de 100 millones de dólares en 2001; hoy ronda los cientos. Esta curva, más abrupta que la Ley de Moore, explica por qué la genómica se volvió una ciencia de datos masivos.",
     date: "2025-10-27",
@@ -587,7 +552,7 @@ export const articles: Article[] = [
   {
     slug: "vision-artificial-cultivos",
     title: "Diagnosticar cultivos con visión artificial",
-    category: "tecnologia",
+    category: "software-salud",
     excerpt:
       "Una hoja con manchas puede fotografiarse, enviarse y clasificarse en segundos. La fitopatología digital combina redes convolucionales, datos de campo y conocimiento agronómico para detectar enfermedades antes de que se dispersen.",
     date: "2025-10-12",
@@ -642,7 +607,7 @@ export const articles: Article[] = [
   {
     slug: "nueva-microscopia",
     title: "Ver lo invisible: la nueva era de la microscopía",
-    category: "tecnologia",
+    category: "software-salud",
     excerpt:
       "La superresolución rompió el límite de difracción, la microscopía de hoja de luz fotografía embriones completos en desarrollo y la cryo-EM revela complejos moleculares. Ver mejor sigue siendo la forma más antigua de descubrir.",
     date: "2025-09-28",
@@ -701,7 +666,7 @@ export const articles: Article[] = [
   {
     slug: "arboles-filogeneticos",
     title: "Árboles filogenéticos: la genealogía de la vida",
-    category: "bioinformatica",
+    category: "biotecnologia",
     excerpt:
       "Un árbol filogenético es una hipótesis sobre quién desciende de quién. Construirlo exige alinear secuencias, elegir modelos evolutivos y cuantificar la incertidumbre: la estadística detrás del dibujo.",
     date: "2025-09-14",
@@ -764,7 +729,7 @@ export const articles: Article[] = [
   {
     slug: "pcr-explicada",
     title: "PCR: la fotocopiadora molecular, explicada",
-    category: "biologia",
+    category: "experimentos-caseros",
     excerpt:
       "La reacción en cadena de la polimerasa convierte trazas de ADN en millones de copias en un par de horas. Es la técnica detrás de diagnósticos, paternidades, forense y de casi toda la biología molecular moderna.",
     date: "2025-08-31",
@@ -827,7 +792,7 @@ export const articles: Article[] = [
   {
     slug: "repositorios-genomicos",
     title: "Dónde viven los datos de la vida: repositorios genómicos",
-    category: "ciencia-datos",
+    category: "software-salud",
     excerpt:
       "GenBank, ENA, PDB, UniProt, GBIF: la ciencia moderna funciona porque existe una red global de repositorios donde cada dato es localizable, citable y reutilizable. Esta es la infraestructura invisible del descubrimiento.",
     date: "2025-08-17",
@@ -1195,6 +1160,46 @@ export const datasets: Dataset[] = [
     description:
       "Matriz sintética de demostración para practicar análisis de expresión diferencial, PCA y enriquecimiento funcional con R o Python.",
     spark: [30, 26, 34, 42, 39, 55, 61],
+  },
+];
+
+/* ------------------------------------------------------------------ */
+/* Software & Salud (programas propios demo)                             */
+/* ------------------------------------------------------------------ */
+export const softwareProjects: SoftwareProject[] = [
+  {
+    slug: "calculadora-bio-salud",
+    titulo: "CalculaBio — Salud a un clic",
+    resumen:
+      "Calculadora web que estima IMC, TMB y riesgo metabólico con visualización instantánea. Pensada para estudiantes y público curioso, sin jerga.",
+    coverImage: IMG.datos,
+    videoUrl: "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+    downloadUrl: "https://github.com/JhonyLezama/biolnexo/releases/tag/calculabio-v1",
+    repoUrl: "https://github.com/JhonyLezama/biolnexo",
+    stack: ["React", "TypeScript", "Tailwind"],
+    areaSalud: "Nutrición",
+    destacado: true,
+  },
+  {
+    slug: "visor-fasta",
+    titulo: "Visor FASTA BiolNexo",
+    resumen:
+      "Pega tu secuencia y ve GC%, traducción y motivos en vivo. Ideal para clases de biotecnología, 100% en el navegador.",
+    coverImage: IMG.genoma,
+    repoUrl: "https://github.com/JhonyLezama/biolnexo",
+    stack: ["Vite", "Biopython-like JS"],
+    areaSalud: "Genómica",
+  },
+  {
+    slug: "analizador-pcr",
+    titulo: "PCR Check — Validador de cebadores",
+    resumen:
+      "Valida Tm, dímeros y especificidad de tus primers antes de pedirlos. Evita un gel fallido en 15 segundos.",
+    coverImage: IMG.laboratorio,
+    videoUrl: "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+    downloadUrl: "https://github.com/JhonyLezama/biolnexo",
+    stack: ["Python", "Streamlit"],
+    areaSalud: "Biología molecular",
   },
 ];
 

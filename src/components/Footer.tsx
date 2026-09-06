@@ -26,20 +26,20 @@ const sections = [
     id: "explorar",
     label: "Explorar",
     links: [
-      { to: "/ciencia", label: "Ciencia" },
-      { to: "/tema/biologia", label: "Biología" },
-      { to: "/tema/bioinformatica", label: "Bioinformática" },
-      { to: "/investigacion", label: "Investigación" },
+      { to: "/tema/biotecnologia", label: "Biotecnología" },
+      { to: "/tema/tendencias", label: "Tendencias" },
+      { to: "/tema/experimentos-caseros", label: "Experimentos caseros" },
+      { to: "/software", label: "Software & Salud" },
     ],
   },
   {
     id: "plataforma",
     label: "Plataforma",
     links: [
-      { to: "/experimentos", label: "Experimentos" },
+      { to: "/experimentos", label: "Experimentos lab" },
       { to: "/datos", label: "Datos científicos" },
       { to: "/busqueda", label: "Buscador" },
-      { to: "/tema/biotecnologia", label: "Biotecnología" },
+      { to: "/ciencia", label: "Todas las áreas" },
     ],
   },
   {

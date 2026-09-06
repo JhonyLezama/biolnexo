@@ -20,12 +20,11 @@ import {
 const navLinks = [
   { to: "/", label: "Inicio", end: true },
   { to: "/ciencia", label: "Ciencia" },
-  { to: "/tema/biologia", label: "Biología" },
-  { to: "/tema/bioinformatica", label: "Bioinformática" },
-  { to: "/tema/tecnologia", label: "Tecnología" },
-  { to: "/experimentos", label: "Experimentos" },
+  { to: "/tema/biotecnologia", label: "Biotecnología" },
+  { to: "/tema/tendencias", label: "Tendencias" },
+  { to: "/tema/experimentos-caseros", label: "Experimentos" },
+  { to: "/software", label: "Software" },
   { to: "/datos", label: "Datos" },
-  { to: "/investigacion", label: "Investigación" },
 ];
 
 function SearchOverlay({ onClose }: { onClose: () => void }) {

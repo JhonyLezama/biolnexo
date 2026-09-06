@@ -19,9 +19,11 @@ import {
   IconCopy,
   IconExternal,
   IconFacebook,
+  IconInstagram,
   IconLinkedin,
   IconQuote,
   IconShare,
+  IconTiktok,
   IconWhatsapp,
   IconX,
 } from "../components/icons";
@@ -102,6 +104,30 @@ function ShareButtons({ title, url, size = "md" }: { title: string; url: string;
     }
   };
 
+  const [copiedIG, setCopiedIG] = useState(false);
+  const [copiedTT, setCopiedTT] = useState(false);
+
+  const copyForSocial = async (network: "instagram" | "tiktok") => {
+    const text = `${title} — BiolNexo\n${url}\n#BiolNexo #Biotecnologia`;
+    try {
+      await navigator.clipboard.writeText(text);
+    } catch {
+      const ta = document.createElement("textarea");
+      ta.value = text;
+      document.body.appendChild(ta);
+      ta.select();
+      document.execCommand("copy");
+      document.body.removeChild(ta);
+    }
+    if (network === "instagram") {
+      setCopiedIG(true);
+      setTimeout(() => setCopiedIG(false), 2000);
+    } else {
+      setCopiedTT(true);
+      setTimeout(() => setCopiedTT(false), 2000);
+    }
+  };
+
   const btnCls =
     size === "sm"
       ? "w-8 h-8 rounded-full border flex items-center justify-center transition-colors duration-200 shrink-0"
@@ -122,6 +148,22 @@ function ShareButtons({ title, url, size = "md" }: { title: string; url: string;
           <Icon className={size === "sm" ? "w-4 h-4" : "w-[18px] h-[18px]"} />
         </a>
       ))}
+      <button
+        onClick={() => copyForSocial("instagram")}
+        aria-label="Copiar para Instagram"
+        title={copiedIG ? "¡Copiado!" : "Copiar para Instagram"}
+        className={`${btnCls} ${copiedIG ? "bg-bio text-white border-bio" : "bg-white text-[#E1306C] border-line hover:bg-[#E1306C] hover:text-white hover:border-[#E1306C]"}`}
+      >
+        <IconInstagram className={size === "sm" ? "w-4 h-4" : "w-[18px] h-[18px]"} />
+      </button>
+      <button
+        onClick={() => copyForSocial("tiktok")}
+        aria-label="Copiar para TikTok"
+        title={copiedTT ? "¡Copiado!" : "Copiar para TikTok"}
+        className={`${btnCls} ${copiedTT ? "bg-bio text-white border-bio" : "bg-white text-ink border-line hover:bg-black hover:text-white hover:border-black"}`}
+      >
+        <IconTiktok className={size === "sm" ? "w-4 h-4" : "w-[18px] h-[18px]"} />
+      </button>
       {typeof navigator !== "undefined" && typeof (navigator as unknown as { share?: (data: ShareData) => Promise<void> }).share === "function" ? (
         <button
           onClick={handleNativeShare}

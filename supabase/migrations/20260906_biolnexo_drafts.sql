@@ -24,7 +24,7 @@ create table if not exists drafts (
   slug text unique,
   excerpt text,
   body_json jsonb not null, -- BodyBlock[]
-  references jsonb not null default '[]'::jsonb,
+  "references" jsonb not null default '[]'::jsonb,
   source_ids uuid[] default '{}',
   source_doi text,
   status text not null default 'pending_review' check (status in ('pending_review','approved','rejected')),

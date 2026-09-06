@@ -1,3 +1,56 @@
+-- BiolNexo — Agente asistido 3×/semana, ES/EN, human-in-the-loop
+-- Fase A sin LLM: solo recolección DOI + panel /admin/borradores (pending_review)
+-- Activar con LLM_ENABLED=true + GEMINI_API_KEY
+
+-- sources: DOI/URL verificables de PubMed/Crossref/OpenAlex/GenBank/GBIF/PDB
+create table if not exists sources (
+  id uuid primary key default gen_random_uuid(),
+  doi text unique,
+  title text not null,
+  url text,
+  area_slug text not null check (area_slug in ('biologia','bioinformatica','biotecnologia','ia-cientifica','ecologia','tecnologia','ciencia-datos','investigacion')),
+  lang text not null check (lang in ('es','en')),
+  fetched_at timestamptz default now(),
+  hash text
+);
+
+-- drafts: borradores tipados BodyBlock, nunca públicos hasta approved
+create table if not exists drafts (
+  id uuid primary key default gen_random_uuid(),
+  area_slug text not null,
+  lang text not null check (lang in ('es','en')),
+  tier text not null check (tier in ('Investigación publicada','Interpretación BiolNexo','Divulgación científica')),
+  title text not null,
+  slug text unique,
+  excerpt text,
+  body_json jsonb not null, -- BodyBlock[]
+  "references" jsonb not null default '[]'::jsonb,
+  source_ids uuid[] default '{}',
+  source_doi text,
+  status text not null default 'pending_review' check (status in ('pending_review','approved','rejected')),
+  created_by text default 'agent',
+  created_at timestamptz default now()
+);
+
+create table if not exists draft_reviews (
+  id uuid primary key default gen_random_uuid(),
+  draft_id uuid references drafts(id) on delete cascade,
+  editor text not null, -- biolnexo@gmail.com
+  decision text not null check (decision in ('approved','rejected')),
+  note text,
+  reviewed_at timestamptz default now()
+);
+
+-- RLS: solo service_role escribe drafts (agente), anon no ve pending_review
+alter table sources enable row level security;
+alter table drafts enable row level security;
+alter table draft_reviews enable row level security;
+
+-- cron 3×/semana se configura fuera (Supabase Cron / Vercel Cron -> scripts/agent_draft.py lunes/miércoles/viernes 06:00 UTC)
+-- Ejemplo insert mock:
+-- insert into sources (doi, title, area_slug, lang, url) values ('10.5281/biolnexo.demo.0001','Demo','bioinformatica','es','https://doi.org/10.5281/biolnexo.demo.0001');
+
+--
 -- BiolNexo Backend — nicho 4 slugs + Software & Salud
 -- Ejecutar después de 20260906. Replica tipos de src/types.ts
 
@@ -74,3 +127,18 @@ insert into software_projects (slug, titulo, resumen, cover_image, video_url, do
   ('visor-fasta','Visor FASTA BiolNexo','Pega tu secuencia y ve GC%, traducción y motivos en vivo. Ideal para clases de biotecnología.','https://image.qwenlm.ai/generated-images/ac36ddd0-ff9b-4674-9cab-ac7565f90cf6/_result.png',null,null,'https://github.com/JhonyLezama/biolnexo','{Vite,"Biopython-like JS"}','Genómica', false),
   ('analizador-pcr','PCR Check — Validador de cebadores','Valida Tm, dímeros y especificidad de tus primers antes de pedirlos.','https://image.qwenlm.ai/generated-images/47d6d106-0da6-44cc-8fad-d946b3817df0/_result.png','https://www.youtube.com/watch?v=dQw4w9WgXcQ','https://github.com/JhonyLezama/biolnexo','{Python,Streamlit}','Biología molecular', false)
 on conflict (slug) do nothing;
+
+--
+-- Fix RLS para que /admin/borradores pueda leer en demo (anon)
+-- En prod, restringir a authenticated con email biolnexo@gmail.com
+create policy if not exists "allow anon read pending drafts (demo)" on drafts
+  for select using (status = 'pending_review');
+
+create policy if not exists "allow service all drafts" on drafts
+  for all using (auth.role() = 'service_role') with check (auth.role() = 'service_role');
+
+-- sources lectura pública para agente y frontend
+create policy if not exists "public read sources" on sources for select using (true);
+create policy if not exists "service write sources" on sources for all using (auth.role() = 'service_role') with check (auth.role() = 'service_role');
+
+--

@@ -20,6 +20,7 @@ export default function AdminDrafts() {
   usePageTitle("Borradores — BiolNexo Admin");
   const [drafts, setDrafts] = useState<MockDraft[]>(mock);
   const [backend, setBackend] = useState(false);
+  const [stats, setStats] = useState({ categories: 0, software: 0, articles: 0, drafts: 0 });
 
   useEffect(() => {
     if (!isSupabaseConfigured || !supabase) return;
@@ -33,6 +34,20 @@ export default function AdminDrafts() {
       .then(({ data, error }) => {
         if (!error && data?.length) setDrafts(data as MockDraft[]);
       });
+    (async () => {
+      const [c, s, a, d] = await Promise.all([
+        supabase.from("categories").select("slug", { count: "exact", head: true }),
+        supabase.from("software_projects").select("slug", { count: "exact", head: true }),
+        supabase.from("articles").select("slug", { count: "exact", head: true }),
+        supabase.from("drafts").select("id", { count: "exact", head: true }).eq("status", "pending_review"),
+      ]);
+      setStats({
+        categories: c.count ?? 0,
+        software: s.count ?? 0,
+        articles: a.count ?? 0,
+        drafts: d.count ?? 0,
+      });
+    })();
   }, []);
 
   return (
@@ -44,10 +59,29 @@ export default function AdminDrafts() {
           3×/semana, ES/EN, asistido. Sin aprobación humana no se publica. Configura <code className="font-mono bg-mist px-1 py-0.5 rounded">LLM_ENABLED=true + GEMINI_API_KEY</code> free tier para activar <code>scripts/agent_draft.py</code>.
         </p>
         <div className="mt-6 rounded-xl bg-aqua-soft border border-aqua/20 p-4 font-mono text-[12px] text-inksoft">
-          Estado: <span className="font-bold text-ink">{backend ? "Supabase conectado" : "LLM_ENABLED=false"}</span> {backend ? "— mostrando drafts reales." : "(dry-run) — ejecuta `python scripts/agent_draft.py --area biotecnologia --lang es` para mock."}
+          Estado: <span className="font-bold text-ink">{backend ? "Supabase conectado ✓" : "LLM_ENABLED=false"}</span> {backend ? "— datos reales." : "(dry-run) — ejecuta `python scripts/agent_draft.py --area biotecnologia --lang es` para mock."}
           <br />
-          Cron recomendado: lunes/miércoles/viernes 06:00 UTC. Nicho: biotecnologia / tendencias / experimentos-caseros / software-salud.
+          Cron: lunes/miércoles/viernes 06:00 UTC · Nicho: biotecnologia / tendencias / experimentos-caseros / software-salud
         </div>
+
+        {backend && (
+          <div className="mt-6 grid grid-cols-2 lg:grid-cols-4 gap-4">
+            {[
+              { label: "Categorías", value: stats.categories, href: "https://supabase.com/dashboard/project/pnkdymnrgfjifowlmlpl/editor" },
+              { label: "Software", value: stats.software, href: "/software" },
+              { label: "Artículos (DB)", value: stats.articles, href: "/ciencia" },
+              { label: "Borradores", value: stats.drafts, href: "#borradores" },
+            ].map((s) => (
+              <div key={s.label} className="bg-white border border-line rounded-xl p-4">
+                <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-muted">{s.label}</p>
+                <p className="mt-1 font-display font-bold text-2xl text-ink">{s.value}</p>
+                <a href={s.href} target={s.href.startsWith("http") ? "_blank" : undefined} className="mt-2 inline-flex font-mono text-[11px] text-primary hover:underline">
+                  ver →
+                </a>
+              </div>
+            ))}
+          </div>
+        )}
       </Reveal>
 
       <div className="mt-8 grid gap-4">

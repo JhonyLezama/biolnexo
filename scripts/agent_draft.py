@@ -15,7 +15,7 @@ from pathlib import Path
 # --- Config ---
 LLM_ENABLED = os.environ.get("LLM_ENABLED", "false").lower() == "true"
 GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY", "")
-MODEL = os.environ.get("GEMINI_MODEL", "gemini-1.5-flash")
+MODEL = os.environ.get("GEMINI_MODEL", "gemini-2.5-flash-lite")
 SUPABASE_URL = os.environ.get("SUPABASE_URL") or os.environ.get("VITE_SUPABASE_URL") or os.environ.get("NEXT_PUBLIC_SUPABASE_URL") or ""
 SUPABASE_SERVICE_ROLE_KEY = os.environ.get("SUPABASE_SERVICE_ROLE_KEY") or os.environ.get("SUPABASE_SERVICE_KEY") or ""
 # Tier permitido: el agente solo propone, editor aprueba
@@ -83,11 +83,11 @@ def generate_draft(area: str, lang: str, sources_json: str):
     from google import genai
     from google.genai import types
 
-    # Intenta v1 y v1beta, con y sin google_search (v1 no soporta AFC igual)
+    # Modelos disponibles según ListModels v1: 2.5-flash, 2.5-pro, 2.5-flash-lite, 2.5-flash-image, 3.1-flash-lite, 3-pro-image (1.5 ya no para nuevos)
     from google.genai import types as gtypes
     candidates_api = [
-        ("v1", [MODEL, "gemini-1.5-flash", "gemini-1.5-flash-001", "gemini-1.5-pro", "gemini-2.0-flash", "gemini-2.0-flash-001", "gemini-pro", "gemini-2.5-flash"]),
-        ("v1beta", [MODEL, "gemini-1.5-flash", "gemini-1.5-flash-latest", "gemini-2.5-flash", "gemini-pro"]),
+        ("v1", [MODEL, "gemini-2.5-flash-lite", "gemini-2.5-pro", "gemini-3.1-flash-lite", "gemini-2.5-flash", "gemini-2.5-flash-image", "gemini-3-pro-image", "gemma-4-26b-a4b-it"]),
+        ("v1beta", [MODEL, "gemini-2.5-flash-lite", "gemini-1.5-flash", "gemini-2.5-flash"]),
     ]
     # deduplica por api_version+model
     resp = None

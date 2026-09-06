@@ -1355,3 +1355,57 @@ export function categoryName(slug: string): string {
 export function categoryBySlug(slug: string) {
   return categories.find((c) => c.slug === slug);
 }
+
+/* ------------------------------------------------------------------ */
+/* Supabase híbrido — backend real con fallback estático (nicho 4)       */
+/* ------------------------------------------------------------------ */
+import { supabase, isSupabaseConfigured } from "../lib/supabase";
+
+export async function fetchCategories(): Promise<Category[]> {
+  if (!isSupabaseConfigured || !supabase) return categories;
+  const { data, error } = await supabase.from("categories").select("*").order("name");
+  if (error || !data?.length) return categories;
+  return data as Category[];
+}
+
+export async function fetchArticles(): Promise<Article[]> {
+  if (!isSupabaseConfigured || !supabase) return articles;
+  const { data, error } = await supabase.from("articles").select("*").order("date", { ascending: false });
+  if (error || !data?.length) return articles;
+  // mapea snake_case de DB a camelCase del tipo
+  return (data as unknown as Array<Record<string, unknown>>).map((r) => ({
+    slug: r.slug as string,
+    title: r.title as string,
+    category: r.category as Article["category"],
+    excerpt: r.excerpt as string,
+    date: r.date as string,
+    readMin: (r.read_min as number) ?? (r.readMin as number),
+    authorId: (r.author_id as string) ?? (r.authorId as string),
+    image: r.image as string,
+    imageCaption: (r.image_caption as string) ?? (r.imageCaption as string),
+    tags: (r.tags as string[]) ?? [],
+    tier: r.tier as Article["tier"],
+    featured: (r.featured as boolean) ?? false,
+    source: r.source as Article["source"],
+    body: r.body as Article["body"],
+    references: r.references as Article["references"],
+  }));
+}
+
+export async function fetchSoftwareProjects(): Promise<SoftwareProject[]> {
+  if (!isSupabaseConfigured || !supabase) return softwareProjects;
+  const { data, error } = await supabase.from("software_projects").select("*").order("created_at", { ascending: false });
+  if (error || !data?.length) return softwareProjects;
+  return (data as unknown as Array<Record<string, unknown>>).map((r) => ({
+    slug: r.slug as string,
+    titulo: (r.titulo as string) ?? (r.title as string),
+    resumen: r.resumen as string,
+    coverImage: (r.cover_image as string) ?? (r.coverImage as string),
+    videoUrl: (r.video_url as string) ?? (r.videoUrl as string),
+    downloadUrl: (r.download_url as string) ?? (r.downloadUrl as string),
+    repoUrl: (r.repo_url as string) ?? (r.repoUrl as string),
+    stack: (r.stack as string[]) ?? [],
+    areaSalud: (r.area_salud as string) ?? (r.areaSalud as string),
+    destacado: (r.destacado as boolean) ?? false,
+  }));
+}

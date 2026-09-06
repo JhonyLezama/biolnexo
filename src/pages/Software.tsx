@@ -1,9 +1,21 @@
-import { softwareProjects } from "../data/content";
+import { useEffect, useState } from "react";
+import { fetchSoftwareProjects, softwareProjects as fallback } from "../data/content";
 import { SoftwareCard } from "../components/Cards";
 import { Reveal, SectionHead, usePageTitle } from "../components/ui";
+import { isSupabaseConfigured } from "../lib/supabase";
+import type { SoftwareProject } from "../types";
 
 export default function SoftwarePage() {
   usePageTitle("Software & Salud — BiolNexo");
+  const [projects, setProjects] = useState<SoftwareProject[]>(fallback);
+  const [backend, setBackend] = useState(false);
+
+  useEffect(() => {
+    fetchSoftwareProjects().then((data) => {
+      setProjects(data);
+      setBackend(isSupabaseConfigured);
+    });
+  }, []);
 
   return (
     <main className="pb-24">
@@ -30,8 +42,13 @@ export default function SoftwarePage() {
           title="Software propio"
           lead="Resultados de programas hechos en salud y ciencias. Cada card trae imagen o video + descarga y repo."
         />
+        {backend && (
+          <p className="mb-4 font-mono text-[11px] text-bio bg-bio-soft border border-bio/20 inline-flex px-3 py-1 rounded-full">
+            ● Backend Supabase conectado
+          </p>
+        )}
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {softwareProjects.map((p, i) => (
+          {projects.map((p, i) => (
             <Reveal key={p.slug} delay={i * 80}>
               <SoftwareCard project={p} />
             </Reveal>

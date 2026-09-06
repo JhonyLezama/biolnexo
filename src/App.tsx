@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { HashRouter, Route, Routes, useLocation } from "react-router-dom";
+import { HashRouter, Route, Routes, useLocation, Outlet, Navigate } from "react-router-dom";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
 import Home from "./pages/Home";
@@ -10,6 +10,10 @@ import { DatosPage, ExperimentosPage, InvestigacionPage } from "./pages/Platform
 import SoftwarePage from "./pages/Software";
 import { ContactoPage, NotFoundPage, PrivacidadPage, SobrePage } from "./pages/Static";
 import AdminDrafts from "./pages/AdminDrafts";
+import AdminLayout from "./pages/admin/AdminLayout";
+import AdminDashboard from "./pages/admin/Dashboard";
+import AdminLogin from "./pages/admin/AdminLogin";
+import Placeholder from "./pages/admin/Placeholder";
 
 function ScrollToTop() {
   const { pathname } = useLocation();
@@ -17,6 +21,18 @@ function ScrollToTop() {
     window.scrollTo({ top: 0, behavior: "instant" as ScrollBehavior });
   }, [pathname]);
   return null;
+}
+
+function PublicLayout() {
+  return (
+    <>
+      <Header />
+      <div id="contenido">
+        <Outlet />
+      </div>
+      <Footer />
+    </>
+  );
 }
 
 export default function App() {
@@ -29,9 +45,8 @@ export default function App() {
       >
         Saltar al contenido
       </a>
-      <Header />
-      <div id="contenido">
-        <Routes>
+      <Routes>
+        <Route element={<PublicLayout />}>
           <Route path="/" element={<Home />} />
           <Route path="/ciencia" element={<CienciaHub />} />
           <Route path="/tema/:slug" element={<TemaPage />} />
@@ -44,11 +59,22 @@ export default function App() {
           <Route path="/sobre" element={<SobrePage />} />
           <Route path="/contacto" element={<ContactoPage />} />
           <Route path="/privacidad" element={<PrivacidadPage />} />
-          <Route path="/admin/borradores" element={<AdminDrafts />} />
-          <Route path="*" element={<NotFoundPage />} />
-        </Routes>
-      </div>
-      <Footer />
+        </Route>
+
+        <Route path="/admin" element={<AdminLayout />}>
+          <Route index element={<AdminDashboard />} />
+          <Route path="borradores" element={<AdminDrafts />} />
+          <Route path="articulos" element={<Placeholder title="Artículos" desc="CRUD Artículo con editor de bloques (h2/p/list/quote/image/table/sequence/note) — Fase 3" />} />
+          <Route path="software" element={<Placeholder title="Software" desc="CRUD SoftwareProject con imagen/video + links descarga/repo — Fase 4" />} />
+          <Route path="experimentos" element={<Placeholder title="Experimentos" desc="CRUD Experiment con videoUrl — Fase 4" />} />
+          <Route path="categorias" element={<Placeholder title="Categorías" desc="4 slugs + LEGACY_SLUG_MAP — Fase 4" />} />
+          <Route path="medios" element={<Placeholder title="Medios" desc="URL o archivo a Supabase Storage — Fase 4" />} />
+          <Route path="ajustes" element={<Placeholder title="Ajustes" desc="LLM, cron, Supabase, biolnexo@gmail.com — Fase 5" />} />
+          <Route path="login" element={<AdminLogin />} />
+        </Route>
+
+        <Route path="*" element={<NotFoundPage />} />
+      </Routes>
     </HashRouter>
   );
 }

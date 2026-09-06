@@ -17,6 +17,6 @@ jobs:
         with: { python-version: "3.11" }
       - run: pip install google-genai supabase
       - run: |
-          LLM_ENABLED=true GEMINI_API_KEY=${{ secrets.GEMINI_API_KEY }} GEMINI_MODEL=gemini-2.0-flash \
+          LLM_ENABLED=true GEMINI_API_KEY=${{ secrets.GEMINI_API_KEY }} GEMINI_MODEL=gemini-1.5-flash \
           SUPABASE_URL=${{ secrets.VITE_SUPABASE_URL }} SUPABASE_SERVICE_ROLE_KEY=${{ secrets.SUPABASE_SERVICE_ROLE_KEY }} \
           python scripts/agent_draft.py --area ${{ inputs.area || 'biotecnologia' }} --lang ${{ inputs.lang || 'es' }}

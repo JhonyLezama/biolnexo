@@ -87,22 +87,41 @@ def generate_draft(area: str, lang: str, sources_json: str):
 
     prompt = TEMPLATE_PROMPT.format(area=area, lang=lang, sources_json=sources_json)
 
-    # Correción clave vs snippet inicial:
-    # - model: gemini-2.0-flash (no gemini-3-flash-preview)
-    # - tools: types.Tool(google_search=...) (no {'type':'google_search'})
-    # - config: types.GenerateContentConfig (no generation_config dict)
-    # - temperature 0.4 para rigor (no 1), max_output_tokens 2048 (no 65536)
-    resp = client.models.generate_content(
-        model=MODEL,
-        contents=prompt,
-        config=types.GenerateContentConfig(
-            temperature=0.4,
-            max_output_tokens=2048,
-            top_p=0.95,
-            tools=[types.Tool(google_search=types.GoogleSearch())],
-            # thinking_config solo en 2.5; omitir en Flash free
-        ),
-    )
+    # Intenta múltiples modelos por si el configurado no está habilitado en el proyecto de la API key
+    candidates = [MODEL, "gemini-1.5-flash", "gemini-1.5-flash-latest", "gemini-2.5-flash", "gemini-pro"]
+    # deduplica manteniendo orden
+    seen=set(); models=[]
+    for m in candidates:
+        if m not in seen:
+            seen.add(m); models.append(m)
+    resp = None
+    last_err = None
+    for m in models:
+        try:
+            print(f"[BiolNexo] Probando modelo {m}...")
+            resp = client.models.generate_content(
+                model=m,
+                contents=prompt,
+                config=types.GenerateContentConfig(
+                    temperature=0.4,
+                    max_output_tokens=2048,
+                    top_p=0.95,
+                    tools=[types.Tool(google_search=types.GoogleSearch())],
+                ),
+            )
+            print(f"[BiolNexo] Modelo OK: {m}")
+            break
+        except Exception as e:
+            msg = str(e)
+            last_err = e
+            if "404" in msg or "NOT_FOUND" in msg or "not found" in msg.lower():
+                print(f"[BiolNexo] Modelo {m} no disponible, probando siguiente... ({msg[:120]})")
+                continue
+            raise
+    if resp is None:
+        print(f"[BiolNexo] Ningún modelo disponible. Último error: {last_err}")
+        print("→ Verifica en aistudio.google.com que tu API key tenga Generative Language API habilitada y prueba con gemini-1.5-flash en AI Studio.")
+        sys.exit(3)
     text = (resp.text or "").strip()
     # intenta extraer JSON
     try:

@@ -14,6 +14,10 @@ import AdminLayout from "./pages/admin/AdminLayout";
 import AdminDashboard from "./pages/admin/Dashboard";
 import AdminLogin from "./pages/admin/AdminLogin";
 import AdminArticles from "./pages/admin/Articles";
+import SoftwareAdmin from "./pages/admin/SoftwareAdmin";
+import ExperimentsAdmin from "./pages/admin/Experiments";
+import CategoriesAdmin from "./pages/admin/Categories";
+import MediaAdmin from "./pages/admin/Media";
 import Placeholder from "./pages/admin/Placeholder";
 
 function ScrollToTop() {
@@ -66,10 +70,10 @@ export default function App() {
           <Route index element={<AdminDashboard />} />
           <Route path="borradores" element={<AdminDrafts />} />
           <Route path="articulos" element={<AdminArticles />} />
-          <Route path="software" element={<Placeholder title="Software" desc="CRUD SoftwareProject con imagen/video + links descarga/repo — Fase 4" />} />
-          <Route path="experimentos" element={<Placeholder title="Experimentos" desc="CRUD Experiment con videoUrl — Fase 4" />} />
-          <Route path="categorias" element={<Placeholder title="Categorías" desc="4 slugs + LEGACY_SLUG_MAP — Fase 4" />} />
-          <Route path="medios" element={<Placeholder title="Medios" desc="URL o archivo a Supabase Storage — Fase 4" />} />
+          <Route path="software" element={<SoftwareAdmin />} />
+          <Route path="experimentos" element={<ExperimentsAdmin />} />
+          <Route path="categorias" element={<CategoriesAdmin />} />
+          <Route path="medios" element={<MediaAdmin />} />
           <Route path="ajustes" element={<Placeholder title="Ajustes" desc="LLM, cron, Supabase, biolnexo@gmail.com — Fase 5" />} />
           <Route path="login" element={<AdminLogin />} />
         </Route>

@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { Link, NavLink, Outlet, useNavigate, useLocation } from "react-router-dom";
-import { LogoMark, IconHelix, IconChart, IconFlask, IconTerminal, IconBook, IconGear, IconSearch, IconClose, IconMenu, IconCheck } from "../../components/icons";
+import { LogoMark, IconHelix, IconChart, IconFlask, IconTerminal, IconBook, IconGear, IconSearch, IconClose, IconMenu } from "../../components/icons";
+import { supabase, isSupabaseConfigured } from "../../lib/supabase";
 
 const nav = [
   { to: "/admin", label: "Dashboard", icon: IconChart, end: true },
@@ -15,24 +16,48 @@ const nav = [
 
 export default function AdminLayout() {
   const [drawer, setDrawer] = useState(false);
+  const [email, setEmail] = useState<string | null>(null);
+  const [checking, setChecking] = useState(true);
   const navigate = useNavigate();
   const location = useLocation();
   const isLogin = location.pathname === "/admin/login";
 
   useEffect(() => {
-    if (isLogin) return;
-    const auth = localStorage.getItem("biolnexo_admin");
-    if (auth !== "biolnexo@gmail.com") {
-      navigate("/admin/login", { replace: true });
-    }
+    let unsub: (() => void) | undefined;
+    const check = async () => {
+      if (isLogin) { setChecking(false); return; }
+      if (!isSupabaseConfigured || !supabase) {
+        const auth = localStorage.getItem("biolnexo_admin");
+        if (auth !== "biolnexo@gmail.com") navigate("/admin/login", { replace: true });
+        else setEmail(auth);
+        setChecking(false);
+        return;
+      }
+      const { data } = await supabase.auth.getSession();
+      const sessEmail = data.session?.user?.email?.toLowerCase() || null;
+      if (sessEmail === "biolnexo@gmail.com") {
+        setEmail(sessEmail);
+      } else {
+        navigate("/admin/login", { replace: true });
+      }
+      setChecking(false);
+      const { data: sub } = supabase.auth.onAuthStateChange((_e, sess) => {
+        const em = sess?.user?.email?.toLowerCase() || null;
+        if (em === "biolnexo@gmail.com") setEmail(em);
+        else if (!isLogin) navigate("/admin/login", { replace: true });
+      });
+      unsub = () => sub.subscription.unsubscribe();
+    };
+    check();
+    return () => unsub?.();
   }, [location.pathname, isLogin, navigate]);
 
   if (isLogin) return <Outlet />;
+  if (checking) return <div className="min-h-screen bg-paper flex items-center justify-center font-mono text-[12px] text-muted">Verificando acceso...</div>;
+  if (!email) return null;
 
-  const email = typeof localStorage !== "undefined" ? localStorage.getItem("biolnexo_admin") : null;
-  if (email !== "biolnexo@gmail.com") return null;
-
-  const logout = () => {
+  const logout = async () => {
+    if (isSupabaseConfigured && supabase) await supabase.auth.signOut();
     localStorage.removeItem("biolnexo_admin");
     navigate("/admin/login");
   };
@@ -66,7 +91,7 @@ export default function AdminLayout() {
             <div className="flex items-center gap-3">
               <span className="w-8 h-8 rounded-full bg-aqua text-navy font-mono font-bold flex items-center justify-center text-[12px]">BL</span>
               <div className="min-w-0">
-                <p className="text-[13px] font-semibold truncate">biolnexo@gmail.com</p>
+                <p className="text-[13px] font-semibold truncate">{email}</p>
                 <p className="font-mono text-[11px] text-[#7e9ab5]">Editor único</p>
               </div>
             </div>

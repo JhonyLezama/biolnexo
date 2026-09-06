@@ -1,1 +1,235 @@
 @import "tailwindcss";
+
+@theme {
+  --font-display: "Space Grotesk", "Trebuchet MS", sans-serif;
+  --font-body: "IBM Plex Sans", "Segoe UI", sans-serif;
+  --font-mono: "IBM Plex Mono", "Courier New", monospace;
+
+  --color-paper: #f4f7fa;
+  --color-mist: #eaeff5;
+  --color-line: #dce5ee;
+  --color-ink: #0b1c2c;
+  --color-inksoft: #31465b;
+  --color-muted: #5c7086;
+
+  --color-primary: #0e4e8c;
+  --color-primary-deep: #093363;
+  --color-navy: #071a2e;
+  --color-navy-2: #0b2540;
+  --color-navy-3: #12345a;
+
+  --color-bio: #0e8f5f;
+  --color-bio-soft: #e2f3ea;
+  --color-aqua: #0fa8c0;
+  --color-aqua-soft: #e0f4f8;
+  --color-warn: #b26a08;
+  --color-warn-soft: #fdf3e0;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  @apply bg-paper text-ink font-body antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+::selection {
+  background: #0fa8c0;
+  color: #ffffff;
+}
+
+:focus-visible {
+  outline: 2px solid #0fa8c0;
+  outline-offset: 2px;
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-track {
+  background: #eaeff5;
+}
+::-webkit-scrollbar-thumb {
+  background: #b9c9d8;
+  border-radius: 6px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #0e4e8c;
+}
+
+/* ---------- ambient backgrounds ---------- */
+.grid-dots {
+  background-image: radial-gradient(#c3d3e1 1.1px, transparent 1.1px);
+  background-size: 24px 24px;
+}
+.grid-dots-dark {
+  background-image: radial-gradient(rgba(126, 187, 231, 0.16) 1.1px, transparent 1.1px);
+  background-size: 24px 24px;
+}
+.wash-blue {
+  background: radial-gradient(ellipse 60% 50% at 70% 20%, rgba(14, 78, 140, 0.08), transparent 70%);
+}
+.wash-aqua {
+  background: radial-gradient(ellipse 50% 45% at 15% 80%, rgba(15, 168, 192, 0.09), transparent 70%);
+}
+
+/* ---------- keyframes ---------- */
+@keyframes ticker-x {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+@keyframes floaty {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-9px);
+  }
+}
+@keyframes node-pulse {
+  0%,
+  100% {
+    opacity: 0.25;
+    transform: scale(0.85);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.15);
+  }
+}
+@keyframes dash-flow {
+  to {
+    stroke-dashoffset: -260;
+  }
+}
+@keyframes spin-slow {
+  to {
+    transform: rotate(360deg);
+  }
+}
+@keyframes caret-blink {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0;
+  }
+}
+@keyframes bar-rise {
+  from {
+    transform: scaleY(0);
+  }
+  to {
+    transform: scaleY(1);
+  }
+}
+
+/* ---------- motion utilities ---------- */
+.ticker-track {
+  animation: ticker-x 52s linear infinite;
+}
+.ticker-track:hover {
+  animation-play-state: paused;
+}
+.anim-float {
+  animation: floaty 7s ease-in-out infinite;
+}
+.anim-float-2 {
+  animation: floaty 8.5s ease-in-out 1.4s infinite;
+}
+.node-pulse {
+  animation: node-pulse 3.4s ease-in-out infinite;
+  transform-box: fill-box;
+  transform-origin: center;
+}
+.helix-flow {
+  stroke-dasharray: 5 7;
+  animation: dash-flow 14s linear infinite;
+}
+.orbit-spin {
+  animation: spin-slow 46s linear infinite;
+  transform-box: fill-box;
+  transform-origin: center;
+}
+.orbit-spin-rev {
+  animation: spin-slow 60s linear infinite reverse;
+  transform-box: fill-box;
+  transform-origin: center;
+}
+.caret-blink {
+  animation: caret-blink 1.1s step-end infinite;
+}
+.bar-rise {
+  animation: bar-rise 0.9s cubic-bezier(0.22, 0.61, 0.36, 1) both;
+  transform-box: fill-box;
+  transform-origin: bottom;
+}
+
+/* ---------- scroll reveal ---------- */
+.reveal {
+  opacity: 0;
+  transform: translateY(20px);
+  transition:
+    opacity 0.75s ease,
+    transform 0.75s cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+.reveal.in {
+  opacity: 1;
+  transform: none;
+}
+
+/* ---------- prose details ---------- */
+.article-body p {
+  @apply text-inksoft leading-[1.85];
+}
+.article-body h2 {
+  @apply font-display text-2xl font-semibold text-ink mt-12 mb-4 tracking-tight;
+}
+.article-body ul {
+  @apply my-5 space-y-2.5 pl-1;
+}
+.article-body ul li {
+  @apply text-inksoft leading-relaxed pl-5 relative;
+}
+.article-body ul li::before {
+  content: "";
+  @apply absolute left-0 top-[0.68em] h-[2px] w-3 bg-aqua;
+}
+
+mark {
+  background: #d4f1f7;
+  color: #093363;
+  padding: 0 2px;
+  border-radius: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  .reveal {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+  .ticker-track,
+  .anim-float,
+  .anim-float-2,
+  .node-pulse,
+  .helix-flow,
+  .orbit-spin,
+  .orbit-spin-rev,
+  .caret-blink,
+  .bar-rise {
+    animation: none !important;
+  }
+}

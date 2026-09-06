@@ -1,0 +1,22 @@
+name: BiolNexo Agent 3x/semana
+on:
+  schedule:
+    - cron: "0 6 * * 1" # lunes 06:00 UTC biotecnologia es
+    - cron: "0 6 * * 3" # miércoles tendencias es
+    - cron: "0 6 * * 5" # viernes experimentos-caseros es
+  workflow_dispatch:
+    inputs:
+      area: { description: "Área", default: "biotecnologia", type: choice, options: [biotecnologia, tendencias, experimentos-caseros, software-salud] }
+      lang: { description: "Idioma", default: "es", type: choice, options: [es, en] }
+jobs:
+  draft:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.11" }
+      - run: pip install google-genai supabase
+      - run: |
+          LLM_ENABLED=true GEMINI_API_KEY=${{ secrets.GEMINI_API_KEY }} GEMINI_MODEL=gemini-2.0-flash \
+          SUPABASE_URL=${{ secrets.VITE_SUPABASE_URL }} SUPABASE_SERVICE_ROLE_KEY=${{ secrets.SUPABASE_SERVICE_ROLE_KEY }} \
+          python scripts/agent_draft.py --area ${{ inputs.area || 'biotecnologia' }} --lang ${{ inputs.lang || 'es' }}

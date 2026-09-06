@@ -129,8 +129,8 @@ create policy "service write software" on software_projects for all using (auth.
 -- Seed software inicial (3 demos del content.ts)
 insert into software_projects (slug, titulo, resumen, cover_image, video_url, download_url, repo_url, stack, area_salud, destacado) values
   ('calculadora-bio-salud','CalculaBio — Salud a un clic','Calculadora web que estima IMC, TMB y riesgo metabólico con visualización instantánea.','https://image.qwenlm.ai/generated-images/d09a0121-c8c6-4b36-ab90-9faaf26ab323/_result.png','https://www.youtube.com/watch?v=dQw4w9WgXcQ','https://github.com/JhonyLezama/biolnexo/releases/tag/calculabio-v1','https://github.com/JhonyLezama/biolnexo','{React,TypeScript,Tailwind}','Nutrición', true),
-  ('visor-fasta','Visor FASTA BiolNexo','Pega tu secuencia y ve GC%, traducción y motivos en vivo. Ideal para clases de biotecnología.','https://image.qwenlm.ai/generated-images/ac36ddd0-ff9b-4674-9cab-ac7565f90cf6/_result.png',null,null,'https://github.com/JhonyLezama/biolnexo','{Vite,"Biopython-like JS"}','Genómica', false),
-  ('analizador-pcr','PCR Check — Validador de cebadores','Valida Tm, dímeros y especificidad de tus primers antes de pedirlos.','https://image.qwenlm.ai/generated-images/47d6d106-0da6-44cc-8fad-d946b3817df0/_result.png','https://www.youtube.com/watch?v=dQw4w9WgXcQ','https://github.com/JhonyLezama/biolnexo','{Python,Streamlit}','Biología molecular', false)
+  ('visor-fasta','Visor FASTA BiolNexo','Pega tu secuencia y ve GC%, traducción y motivos en vivo. Ideal para clases de biotecnología.','https://image.qwenlm.ai/generated-images/ac36ddd0-ff9b-4674-9cab-ac7565f90cf6/_result.png',null,null,'https://github.com/JhonyLezama/biolnexo','{Vite,Biopython}','Genómica', false),
+  ('analizador-pcr','PCR Check — Validador de cebadores','Valida Tm, dímeros y especificidad de tus primers antes de pedirlos.','https://image.qwenlm.ai/generated-images/47d6d106-0da6-44cc-8fad-d946b3817df0/_result.png','https://www.youtube.com/watch?v=dQw4w9WgXcQ','https://github.com/JhonyLezama/biolnexo','https://github.com/JhonyLezama/biolnexo','{Python,Streamlit}','Biología molecular', false)
 on conflict (slug) do nothing;
 
 --

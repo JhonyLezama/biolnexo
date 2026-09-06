@@ -83,44 +83,64 @@ def generate_draft(area: str, lang: str, sources_json: str):
     from google import genai
     from google.genai import types
 
-    client = genai.Client(api_key=GEMINI_API_KEY)
-
-    prompt = TEMPLATE_PROMPT.format(area=area, lang=lang, sources_json=sources_json)
-
-    # Intenta múltiples modelos por si el configurado no está habilitado en el proyecto de la API key
-    candidates = [MODEL, "gemini-1.5-flash", "gemini-1.5-flash-latest", "gemini-2.5-flash", "gemini-pro"]
-    # deduplica manteniendo orden
-    seen=set(); models=[]
-    for m in candidates:
-        if m not in seen:
-            seen.add(m); models.append(m)
+    # Intenta v1 y v1beta, con y sin google_search (v1 no soporta AFC igual)
+    from google.genai import types as gtypes
+    candidates_api = [
+        ("v1", [MODEL, "gemini-1.5-flash", "gemini-1.5-flash-001", "gemini-1.5-pro", "gemini-2.0-flash", "gemini-2.0-flash-001", "gemini-pro", "gemini-2.5-flash"]),
+        ("v1beta", [MODEL, "gemini-1.5-flash", "gemini-1.5-flash-latest", "gemini-2.5-flash", "gemini-pro"]),
+    ]
+    # deduplica por api_version+model
     resp = None
     last_err = None
-    for m in models:
+    # Primero intenta listar modelos disponibles para debug
+    for api_ver in ["v1", "v1beta"]:
         try:
-            print(f"[BiolNexo] Probando modelo {m}...")
-            resp = client.models.generate_content(
-                model=m,
-                contents=prompt,
-                config=types.GenerateContentConfig(
-                    temperature=0.4,
-                    max_output_tokens=2048,
-                    top_p=0.95,
-                    tools=[types.Tool(google_search=types.GoogleSearch())],
-                ),
-            )
-            print(f"[BiolNexo] Modelo OK: {m}")
+            tmp_client = genai.Client(api_key=GEMINI_API_KEY, http_options=gtypes.HttpOptions(api_version=api_ver))
+            listed = list(tmp_client.models.list())
+            print(f"[BiolNexo] Modelos disponibles en {api_ver}: {[m.name for m in listed[:8]]}")
             break
         except Exception as e:
-            msg = str(e)
-            last_err = e
-            if "404" in msg or "NOT_FOUND" in msg or "not found" in msg.lower():
-                print(f"[BiolNexo] Modelo {m} no disponible, probando siguiente... ({msg[:120]})")
-                continue
-            raise
+            print(f"[BiolNexo] No se pudo listar modelos {api_ver}: {e}")
+
+    prompt = TEMPLATE_PROMPT.format(area=area, lang=lang, sources_json=sources_json)
+    for api_ver, models in candidates_api:
+        client = genai.Client(api_key=GEMINI_API_KEY, http_options=gtypes.HttpOptions(api_version=api_ver))
+        # deduplica
+        seen=set(); uniq=[]
+        for m in models:
+            if m not in seen:
+                seen.add(m); uniq.append(m)
+        for m in uniq:
+            if resp is not None:
+                break
+            for with_search in [True, False]:
+                if resp is not None:
+                    break
+                try:
+                    print(f"[BiolNexo] Probando {api_ver} / {m} {'+search' if with_search else ''}...")
+                    cfg = gtypes.GenerateContentConfig(
+                        temperature=0.4,
+                        max_output_tokens=2048,
+                        top_p=0.95,
+                    )
+                    if with_search:
+                        cfg.tools = [gtypes.Tool(google_search=gtypes.GoogleSearch())]
+                    resp = client.models.generate_content(model=m, contents=prompt, config=cfg)
+                    print(f"[BiolNexo] Modelo OK: {api_ver}/{m}")
+                    break
+                except Exception as e:
+                    msg = str(e)
+                    last_err = e
+                    if "404" in msg or "NOT_FOUND" in msg or "not found" in msg.lower():
+                        print(f"[BiolNexo] {m} no disponible ({msg[:120]})")
+                        continue
+                    print(f"[BiolNexo] Error {m}: {msg[:200]}")
+                    continue
+        if resp is not None:
+            break
     if resp is None:
         print(f"[BiolNexo] Ningún modelo disponible. Último error: {last_err}")
-        print("→ Verifica en aistudio.google.com que tu API key tenga Generative Language API habilitada y prueba con gemini-1.5-flash en AI Studio.")
+        print("→ En AI Studio prueba gemini-1.5-flash y verifica que la API key sea de un proyecto con Generative Language API habilitada. Si tu proyecto es nuevo, puede que solo tenga gemini-3.x via Interactions API.")
         sys.exit(3)
     text = (resp.text or "").strip()
     # intenta extraer JSON

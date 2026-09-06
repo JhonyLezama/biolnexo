@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { HashRouter, Route, Routes, useLocation, Outlet, Navigate } from "react-router-dom";
+import { BrowserRouter, Route, Routes, useLocation, Outlet } from "react-router-dom";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
 import Home from "./pages/Home";
@@ -37,7 +37,7 @@ function PublicLayout() {
 
 export default function App() {
   return (
-    <HashRouter>
+    <BrowserRouter>
       <ScrollToTop />
       <a
         href="#contenido"
@@ -61,7 +61,7 @@ export default function App() {
           <Route path="/privacidad" element={<PrivacidadPage />} />
         </Route>
 
-        <Route path="/admin" element={<AdminLayout />}>
+        <Route path="/admin/*" element={<AdminLayout />}>
           <Route index element={<AdminDashboard />} />
           <Route path="borradores" element={<AdminDrafts />} />
           <Route path="articulos" element={<Placeholder title="Artículos" desc="CRUD Artículo con editor de bloques (h2/p/list/quote/image/table/sequence/note) — Fase 3" />} />
@@ -75,6 +75,6 @@ export default function App() {
 
         <Route path="*" element={<NotFoundPage />} />
       </Routes>
-    </HashRouter>
+    </BrowserRouter>
   );
 }

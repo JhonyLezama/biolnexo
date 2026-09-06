@@ -33,9 +33,11 @@ export default function AdminLogin() {
     }
     setLoading(true);
     setErr("");
+    const siteUrl = (import.meta as unknown as { env: Record<string, string | undefined> }).env.VITE_SITE_URL || "https://biolnexo.vercel.app";
+    const redirectTo = siteUrl.endsWith("/admin") ? siteUrl : `${siteUrl.replace(/\/$/, "")}/admin`;
     const { error } = await supabase.auth.signInWithOtp({
       email: clean,
-      options: { emailRedirectTo: window.location.origin + "/admin" },
+      options: { emailRedirectTo: redirectTo },
     });
     setLoading(false);
     if (error) setErr(error.message);

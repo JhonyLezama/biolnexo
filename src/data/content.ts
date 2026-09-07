@@ -1322,18 +1322,18 @@ export const bioTools = [
 ];
 
 export const tickerItems = [
-  "ATG·GCT·AAG·TCC·GAT·TCA",
-  "GRCh38 · chr7:117,120,017",
-  "BLAST → 3.2e-41",
-  "AlphaFold pLDDT 92.4",
+  "CRISPR en 4 min · sin jerga",
+  "ADN fresa 10 min · hazlo en casa",
+  "CalculaBio · IMC + TMB al instante",
+  "pLDDT 92.4 · AlphaFold viral",
+  "Tendencias biotecnológicas 3×/sem",
+  "PCR explicada · fotocopiadora molecular",
+  "Experimentos caseros · seguro y visual",
+  "Software salud · apps que miden",
+  "BioNexo · biotecnología que se comparte",
+  "Tendencias · qué se mueve esta semana",
   "16S rRNA · V4 · 251 pb",
-  "BUSCO 98,6 % completo",
-  "R² = 0.94 · σ = 0.003",
-  "QIIME2 · ASV table 4.812",
-  "Cryo-EM 2,8 Å",
   "GBIF · 2.9e9 ocurrencias",
-  "NGS · 2×150 pb · Q30 94 %",
-  "PDB 8XYZ · homodímero",
 ];
 
 /* ------------------------------------------------------------------ */

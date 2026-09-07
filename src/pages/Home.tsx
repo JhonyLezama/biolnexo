@@ -74,12 +74,12 @@ function Ticker() {
 }
 
 export default function Home() {
-  usePageTitle("BiolNexo — Ciencia • Tecnología • Ingeniería");
+  usePageTitle("BiolNexo — Biotecnología viral, tendencias y software de salud");
   const featured = articles.find((a) => a.featured) ?? articles[0];
   const latest = articles.slice(1, 7);
   const bioArts = [
-    ...articlesByCategory("bioinformatica"),
-    articles.find((a) => a.slug === "ia-transforma-biologia")!,
+    ...articlesByCategory("tendencias"),
+    ...articlesByCategory("biotecnologia"),
   ].slice(0, 3);
 
   const [email, setEmail] = useState("");
@@ -115,9 +115,9 @@ export default function Home() {
                 [ Plataforma científica ]<span className="caret-blink text-aqua">_</span>
               </p>
               <h1 className="mt-5 font-display font-bold text-[clamp(2rem,7vw,2.5rem)] leading-[1.05] md:text-[clamp(2.5rem,4vw,3.6rem)] tracking-[-0.02em] text-ink">
-                La ciencia que{" "}
+                Biotecnología que{" "}
                 <span className="relative inline-block text-primary">
-                  conecta
+                  se entiende
                   <svg
                     className="absolute -bottom-1.5 left-0 w-full h-[10px] text-aqua"
                     viewBox="0 0 220 10"
@@ -127,12 +127,10 @@ export default function Home() {
                     <path d="M3 7c60-5 150-5 214-2" fill="none" stroke="currentColor" strokeWidth="3.5" strokeLinecap="round" />
                   </svg>
                 </span>{" "}
-                el conocimiento con el futuro.
+                y se comparte.
               </h1>
               <p className="mt-6 text-[16px] md:text-lg leading-relaxed text-inksoft max-w-xl">
-                Explora biología, bioinformática, tecnología, inteligencia
-                artificial, investigación y los descubrimientos que están
-                transformando nuestra comprensión del mundo.
+                CRISPR en 4 min, ADN de fresa en 10, tendencias semanales y apps de salud — sin jerga, con fuentes y listo para compartir en clase y redes.
               </p>
             </Reveal>
             <Reveal delay={140}>
@@ -146,13 +144,13 @@ export default function Home() {
               </div>
             </Reveal>
             <Reveal delay={260}>
-              <div className="mt-12 grid grid-cols-2 sm:grid-cols-4 gap-6 border-t border-line pt-7">
-                <Stat value="08" label="áreas científicas" />
-                <Stat value="12" label="artículos publicados" />
-                <Stat value="05" label="protocolos y experimentos" />
-                <Stat value="06" label="datasets referenciados" />
-              </div>
-            </Reveal>
+                <div className="mt-12 grid grid-cols-2 sm:grid-cols-4 gap-6 border-t border-line pt-7">
+                  <Stat value="04" label="áreas virales" />
+                  <Stat value="12" label="artículos publicados" />
+                  <Stat value="05" label="experimentos caseros" />
+                  <Stat value="03" label="apps de salud" />
+                </div>
+              </Reveal>
           </div>
 
           <div className="lg:col-span-6">
@@ -192,8 +190,8 @@ export default function Home() {
           <SectionHead
             index="02"
             eyebrow="Áreas"
-            title="Explora la plataforma por área"
-            lead="Ocho áreas interconectadas: del genoma al ecosistema, del microscopio al cluster de cómputo."
+            title="4 áreas virales, sin dispersión"
+            lead="Biotecnología, tendencias, experimentos caseros y software de salud — todo lo demás es tag, no área."
           />
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
             {categories.slice(0, 4).map((c, i) => {
@@ -241,7 +239,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ============ BIOINFORMÁTICA ============ */}
+      {/* ============ TENDENCIAS BIOTECNOLÓGICAS ============ */}
       <section className="relative bg-navy overflow-hidden">
         <div className="absolute inset-0 grid-dots-dark opacity-50" aria-hidden />
         <div
@@ -255,9 +253,9 @@ export default function Home() {
               <SectionHead
                 dark
                 index="03"
-                eyebrow="Bioinformática"
-                title="Cuando la biología se encuentra con los datos."
-                lead="Secuencias, genomas, alineamientos y árboles filogenéticos: la capa computacional donde la biología se vuelve analizable, comparable y reproducible."
+                eyebrow="Tendencias"
+                title="Lo que se mueve en biotecnología esta semana."
+                lead="CRISPR, biofármacos y microbios útiles en 4 min: hook viral + qué pasó + por qué importa. Curado por el agente, verificado por el editor."
               />
               <Reveal delay={100}>
                 <div className="grid grid-cols-2 sm:flex sm:flex-wrap gap-2">
@@ -294,8 +292,8 @@ export default function Home() {
               </Reveal>
               <Reveal delay={260}>
                 <div className="mt-8 flex flex-wrap items-center gap-5">
-                  <Link to="/tema/bioinformatica" className={btn.light}>
-                    Entrar al área <IconArrow className="w-4 h-4" />
+                  <Link to="/tema/tendencias" className={btn.light}>
+                    Ver tendencias <IconArrow className="w-4 h-4" />
                   </Link>
                   <div className="flex flex-wrap gap-1.5">
                     {bioTools.slice(0, 6).map((t) => (
@@ -533,11 +531,10 @@ export default function Home() {
               Boletín semanal
             </p>
             <h2 className="mt-3 font-display font-bold text-3xl md:text-4xl text-white leading-tight tracking-tight">
-              La ciencia de la semana, directo a tu bandeja.
+              Biotecnología viral en tu correo.
             </h2>
             <p className="mt-4 text-[15px] leading-relaxed text-[#b6c9dc] max-w-lg">
-              Artículos nuevos, datasets interesantes, herramientas
-              bioinformáticas y protocolos — sin ruido, con fuentes.
+              Tendencias 3×/sem, experimentos caseros en video y apps de salud — sin jerga, con fuentes y listo para compartir.
             </p>
           </Reveal>
           <Reveal delay={150}>

@@ -24,7 +24,6 @@ const navLinks = [
   { to: "/tema/tendencias", label: "Tendencias" },
   { to: "/tema/experimentos-caseros", label: "Experimentos" },
   { to: "/software", label: "Software" },
-  { to: "/datos", label: "Datos" },
 ];
 
 function SearchOverlay({ onClose }: { onClose: () => void }) {

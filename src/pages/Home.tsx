@@ -383,72 +383,6 @@ export default function Home() {
           ))}
         </div>
       </section>
-
-      {/* ============ DATOS ============ */}
-      <section className="bg-white border-y border-line overflow-hidden">
-        <div className="max-w-7xl mx-auto px-4 sm:px-5 md:px-8 py-20 md:py-28">
-          <SectionHead
-            index="05"
-            eyebrow="Datos"
-            title="Datos científicos"
-            lead="Conjuntos de datos biológicos, visualizaciones interactivas y estadísticas: la materia prima de la ciencia moderna, con repositorios reales y datos de demostración claramente etiquetados."
-            action={{ to: "/datos", label: "Explorar datasets" }}
-          />
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-start min-w-0">
-            {/* Gráficas - grid anidado */}
-            <div className="lg:col-span-7 xl:col-span-8 grid gap-6 min-w-0">
-              <Reveal className="min-w-0">
-                <ConsoleFrame title="costo_genoma.log — tendencia histórica (ilustrativa, basada en NHGRI)">
-                  <CostChart data={sequencingCost} />
-                </ConsoleFrame>
-              </Reveal>
-              <Reveal className="min-w-0" delay={120}>
-                <ConsoleFrame title="datos_genomicos.csv — volumen público estimado">
-                  <GrowthArea data={genomicGrowth} />
-                </ConsoleFrame>
-              </Reveal>
-            </div>
-            {/* Datasets - grid */}
-            <div className="lg:col-span-5 xl:col-span-4 grid gap-4 content-start min-w-0">
-              <div className="grid gap-4">
-                {datasets.slice(0, 4).map((d, i) => (
-                  <Reveal key={d.id} delay={i * 90} className="min-w-0">
-                    <Link
-                      to="/datos"
-                      className="group grid grid-cols-[40px_1fr_16px] items-center gap-3 sm:gap-4 bg-paper border border-line rounded-lg p-4 transition-all duration-300 hover:border-primary/40 hover:bg-white hover:shadow-md min-w-0"
-                    >
-                      <span className="w-10 h-10 rounded-md bg-primary/10 text-primary flex items-center justify-center font-mono text-[11px] font-semibold shrink-0">
-                        {d.formats[0]}
-                      </span>
-                      <span className="min-w-0">
-                        <span className="block font-display font-semibold text-[14px] sm:text-[15px] text-ink group-hover:text-primary transition-colors truncate">
-                          {d.name}
-                        </span>
-                        <span className="block font-mono text-[11px] text-muted truncate">
-                          {d.org} · {d.records}
-                        </span>
-                      </span>
-                      <IconArrow className="w-4 h-4 text-primary shrink-0 opacity-0 group-hover:opacity-100 transition-opacity" />
-                    </Link>
-                  </Reveal>
-                ))}
-              </div>
-              <Reveal delay={380} className="min-w-0">
-                <div className="rounded-lg border border-dashed border-primary/30 bg-primary/5 p-4 sm:p-5">
-                  <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-primary">
-                    Próximamente
-                  </p>
-                  <p className="mt-2 text-[13px] sm:text-[13.5px] leading-relaxed text-inksoft break-words">
-                    Visualizaciones interactivas conectadas a APIs científicas
-                    (GenBank, GBIF, PDB) y datasets propios de BiolNexo Labs.
-                  </p>
-                </div>
-              </Reveal>
-            </div>
-          </div>
-        </div>
-      </section>
-
       {/* ============ SOFTWARE & SALUD ============ */}
       <section className="max-w-7xl mx-auto px-4 sm:px-5 md:px-8 py-20 md:py-28">
         <SectionHead
@@ -466,57 +400,6 @@ export default function Home() {
           ))}
         </div>
       </section>
-
-      {/* ============ INVESTIGACIÓN ============ */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-5 md:px-8 py-20 md:py-28">
-        <SectionHead
-          index="06"
-          eyebrow="Investigación"
-          title="Investigación científica"
-          lead="Publicaciones con pregunta, metodología, resultados y DOI. Y una regla de oro: siempre sabrás qué nivel de contenido estás leyendo."
-          action={{ to: "/investigacion", label: "Ir al área de investigación" }}
-        />
-        <div className="grid lg:grid-cols-[0.9fr_1.4fr] gap-10 items-start">
-          <Reveal>
-            <div className="bg-white border border-line rounded-lg p-6 md:p-7">
-              <p className="font-mono text-[11px] uppercase tracking-[0.2em] text-muted">
-                Niveles de contenido BiolNexo
-              </p>
-              <div className="mt-5 space-y-5">
-                <div className="border-l-2 border-primary/60 pl-4">
-                  <TierBadge tier="Investigación publicada" small />
-                  <p className="mt-2 text-[13px] leading-relaxed text-inksoft">
-                    Estudios con metodología, resultados y DOI verificable.
-                    Trazabilidad completa de fuentes.
-                  </p>
-                </div>
-                <div className="border-l-2 border-bio pl-4">
-                  <TierBadge tier="Interpretación BiolNexo" small />
-                  <p className="mt-2 text-[13px] leading-relaxed text-inksoft">
-                    Análisis editorial propio sobre ciencia publicada: contexto,
-                    límites y lectura crítica.
-                  </p>
-                </div>
-                <div className="border-l-2 border-aqua pl-4">
-                  <TierBadge tier="Divulgación científica" small />
-                  <p className="mt-2 text-[13px] leading-relaxed text-inksoft">
-                    Conocimiento establecido explicado con claridad para todo
-                    público, con referencias al final.
-                  </p>
-                </div>
-              </div>
-            </div>
-          </Reveal>
-          <div className="space-y-5">
-            {publications.slice(0, 2).map((p, i) => (
-              <Reveal key={p.id} delay={i * 120}>
-                <PublicationCard pub={p} />
-              </Reveal>
-            ))}
-          </div>
-        </div>
-      </section>
-
       {/* ============ NEWSLETTER ============ */}
       <section className="relative bg-primary-deep overflow-hidden">
         <div className="absolute inset-0 grid-dots-dark opacity-60" aria-hidden />

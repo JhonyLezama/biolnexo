@@ -34,10 +34,10 @@ const sections = [
   },
   {
     id: "plataforma",
-    label: "Plataforma",
+    label: "Archivo",
     links: [
-      { to: "/experimentos", label: "Experimentos lab" },
       { to: "/datos", label: "Datos científicos" },
+      { to: "/investigacion", label: "Investigación" },
       { to: "/busqueda", label: "Buscador" },
       { to: "/ciencia", label: "Todas las áreas" },
     ],

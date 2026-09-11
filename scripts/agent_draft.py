@@ -28,7 +28,7 @@ Objetivo: generar BORRADOR tipado BodyBlock para área {area} en idioma {lang}.
 Reglas BiolNexo (inviolables):
 - Solo afirma lo que esté en SOURCES con DOI/URL verificable. Si no hay DOI, fuerza tier="Divulgación científica" y disclaimer demo.
 - Estructura mínima: 1x h2 introducción, 3-4x p de desarrollo (con datos de SOURCES, sin relleno), 1x list o quote, 1x note de cierre. Opcional table/sequence. No inventes image/table sin fuente.
-- BodyBlock usa key "text", nunca "content": {"type": "h2", "text": "..."}, {"type": "p", "text": "..."}.
+- BodyBlock usa key "text", nunca "content": {{"type": "h2", "text": "..."}}, {{"type": "p", "text": "..."}}.
 - SOURCES trae papers reales (doi, title, url, abstract, authors, journal). Resume 1 idea verificable por fuente y cítala en references con su url real.
 - PROHIBIDO inventar DOIs o URLs. Si las fuentes no alcanzan, devuelve references: [], source_doi: null y tier "Divulgación científica" (escritura propia del modelo, sin afirmar estudios).
 - Tier: "Investigación publicada" solo si DOI resuelve y methodology presente; si no, "Interpretación BiolNexo" o "Divulgación científica".

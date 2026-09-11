@@ -39,6 +39,45 @@ SOURCES:
 Genera solo JSON. No texto fuera del JSON.
 """)
 
+def normalize_body_blocks(body):
+    # Gemini suele devolver {"type","content"}; el frontend (BodyBlock) espera {"type","text"}.
+    norm = []
+    for b in (body or []):
+        if not isinstance(b, dict):
+            continue
+        t = b.get("type") or "p"
+        nb = {"type": t}
+        txt = b.get("text", b.get("content", ""))
+        if t in ("h2", "p", "quote", "note", "sequence"):
+            nb["text"] = txt
+            if t == "sequence" and b.get("label"):
+                nb["label"] = b["label"]
+        elif t == "list":
+            items = b.get("items") or []
+            if isinstance(items, str):
+                items = [items]
+            nb["items"] = [str(x) for x in items if str(x).strip()]
+        elif t == "image":
+            nb["src"] = b.get("src", "")
+            if b.get("caption"):
+                nb["caption"] = b["caption"]
+        elif t == "table":
+            nb["header"] = b.get("header") or []
+            nb["rows"] = b.get("rows") or []
+        else:
+            nb["text"] = txt
+        norm.append(nb)
+    return norm or [{"type": "p", "text": "Contenido generado por agente."}]
+
+def unique_slug(base, lang):
+    # Slug único por run: mismo título ya no colisiona (evita error 23505 drafts_slug_key)
+    import re
+    import random
+    from datetime import datetime, timezone
+    clean = re.sub(r"[^a-z0-9-]+", "-", (base or "draft").lower())[:40].strip("-") or "draft"
+    stamp = datetime.now(timezone.utc).strftime("%y%m%d")
+    return f"{clean}-{lang}-{stamp}-{random.randint(1000, 9999)}"[:60].strip("-")
+
 def check_env():
     if not LLM_ENABLED:
         print("[BiolNexo] LLM_ENABLED != true -> modo DRY-RUN, no llama a Gemini. Define LLM_ENABLED=true y GEMINI_API_KEY para activar.")
@@ -164,17 +203,16 @@ def generate_draft(area: str, lang: str, sources_json: str):
         data["tier"] = "Divulgación científica"
 
     print(json.dumps(data, ensure_ascii=False, indent=2))
+    # Normaliza al esquema que espera el frontend/admin antes de insertar
+    data["body"] = normalize_body_blocks(data.get("body", []))
     # Inserta en Supabase drafts (requiere SUPABASE_SERVICE_ROLE_KEY)
     if SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY:
         try:
             from supabase import create_client
             supa = create_client(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY)
-            slug = data.get("slug") or data.get("title","").lower().replace(" ", "-")[:48].replace("[^a-z0-9-]", "-")
-            # genera slug limpio
-            import re
-            slug = re.sub(r"[^a-z0-9-]+", "-", data.get("title","draft").lower())[:48].strip("-")
+            slug = unique_slug(data.get("slug") or data.get("title", "draft"), lang)
             payload = {
-                "area_slug": data.get("category") or area,
+                "area_slug": area,  # slug válido del CLI; el texto libre del modelo ("Biotecnología") rompería la FK de articles al aprobar
                 "lang": lang,
                 "tier": data.get("tier") or "Divulgación científica",
                 "title": data.get("title"),
@@ -185,7 +223,16 @@ def generate_draft(area: str, lang: str, sources_json: str):
                 "source_doi": data.get("source_doi"),
                 "status": "pending_review",
             }
-            res = supa.table("drafts").insert(payload).execute()
+            try:
+                res = supa.table("drafts").insert(payload).execute()
+            except Exception as e:
+                if "23505" in str(e) or "duplicate" in str(e).lower():
+                    # Colisión residual: regenera slug y reintenta una vez
+                    payload["slug"] = unique_slug(data.get("title", "draft"), lang)
+                    res = supa.table("drafts").insert(payload).execute()
+                    slug = payload["slug"]
+                else:
+                    raise
             print(f"[BiolNexo] Draft insertado en Supabase: {slug} -> /admin/borradores")
         except Exception as e:
             print(f"[BiolNexo] No se pudo insertar en Supabase (modo log): {e}")

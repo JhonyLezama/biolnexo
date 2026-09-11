@@ -20,7 +20,80 @@ const emptyBlock = (type: BodyBlock["type"]): BodyBlock => {
   }
 };
 
+const COVERS_BUCKET = "covers";
+const FALLBACK_COVER = "/brand/biolnexo-cover-1640x924.png";
+const MAX_IMG_BYTES = 5 * 1024 * 1024;
+
+// Extrae el path del objeto dentro del bucket covers desde una URL pública.
+// null = externa, fallback local o temporal: no se toca.
+function coversObjectPath(url: string | undefined): string | null {
+  if (!url) return null;
+  if (url.startsWith("blob:") || url.startsWith("data:")) return null;
+  if (url === FALLBACK_COVER) return null;
+  const marker = `/storage/v1/object/public/${COVERS_BUCKET}/`;
+  const idx = url.indexOf(marker);
+  if (idx < 0) return null;
+  const path = url.slice(idx + marker.length).split("?")[0];
+  return path || null;
+}
+
+// Sube al bucket y devuelve URL pública real. Nunca devuelve blob: en silencio.
+async function uploadCover(file: File): Promise<{ url: string } | { err: string }> {
+  if (!isSupabaseConfigured || !supabase) return { err: "Sin Supabase: configura el bucket covers para persistir." };
+  if (!file.type.startsWith("image/")) return { err: "Solo imágenes (PNG/WebP/JPG)." };
+  if (file.size > MAX_IMG_BYTES) return { err: "Imagen mayor a 5MB." };
+  const name = `${Date.now()}-${file.name.replace(/\s+/g, "-")}`;
+  const { error } = await supabase.storage.from(COVERS_BUCKET).upload(name, file, { upsert: true, contentType: file.type });
+  if (error) return { err: `No se pudo subir (${error.message}). Revisa bucket 'covers' y sesión editor.` };
+  const { data } = supabase.storage.from(COVERS_BUCKET).getPublicUrl(name);
+  return { url: `${data.publicUrl}?t=${Date.now()}` };
+}
+
+// Borra la imagen vieja del bucket si ya nadie la usa. Solo llamar al Guardar.
+async function cleanupOldCover(oldUrl: string | undefined, keepUrl: string, excludeSlug?: string): Promise<void> {
+  if (!isSupabaseConfigured || !supabase || !oldUrl || oldUrl.split("?")[0] === keepUrl.split("?")[0]) return;
+  const path = coversObjectPath(oldUrl);
+  if (!path) return;
+  if (await coverBaseInUse(oldUrl.split("?")[0], excludeSlug)) return;
+  await supabase.storage.from(COVERS_BUCKET).remove([path]);
+}
+
+async function coverBaseInUse(base: string, excludeSlug?: string): Promise<boolean> {
+  if (!supabase) return true; // ante duda, no borrar
+  const { data: arts } = await supabase.from("articles").select("slug,image");
+  if ((arts as { slug: string; image: string }[] | null)?.some(
+    (a) => a.slug !== excludeSlug && (a.image || "").split("?")[0] === base,
+  )) return true;
+  const { data: soft } = await supabase.from("software_projects").select("slug,cover_image");
+  if ((soft as { slug: string; cover_image: string }[] | null)?.some(
+    (s) => (s.cover_image || "").split("?")[0] === base,
+  )) return true;
+  return false;
+}
+
+// Limpia imágenes de bloques que se reemplazaron o eliminaron editando.
+async function cleanupRemovedBlocks(oldPaths: string[], keepUrls: string[], excludeSlug?: string): Promise<void> {
+  if (!isSupabaseConfigured || !supabase) return;
+  const keep = new Set(keepUrls.map((u) => (u || "").split("?")[0]));
+  for (const p of oldPaths) {
+    if (!p) continue;
+    const { data: pub } = supabase.storage.from(COVERS_BUCKET).getPublicUrl(p);
+    const base = pub.publicUrl.split("?")[0];
+    if (keep.has(base)) continue;
+    if (await coverBaseInUse(base, excludeSlug)) continue;
+    await supabase.storage.from(COVERS_BUCKET).remove([p]);
+  }
+}
+
+const bodyStoragePaths = (body: BodyBlock[]): string[] =>
+  body
+    .filter((b) => b.type === "image" && b.src)
+    .map((b) => coversObjectPath(b.src as string))
+    .filter((p): p is string => !!p);
+
 function BlockEditor({ blocks, setBlocks }: { blocks: BodyBlock[]; setBlocks: (b: BodyBlock[]) => void }) {
+  const [busy, setBusy] = useState<number | null>(null);
+  const [err, setErr] = useState<string | null>(null);
   const update = (i: number, patch: Partial<BodyBlock>) => {
     const copy = [...blocks];
     copy[i] = { ...copy[i], ...patch } as BodyBlock;
@@ -60,26 +133,20 @@ function BlockEditor({ blocks, setBlocks }: { blocks: BodyBlock[]; setBlocks: (b
                 <input value={b.src || ""} onChange={(e) => update(i, { src: e.target.value })} placeholder="URL imagen o /brand/..." className="w-full border border-line rounded-lg px-3 py-2 text-[13px]" />
                 <input value={b.caption || ""} onChange={(e) => update(i, { caption: e.target.value })} placeholder="Caption" className="w-full border border-line rounded-lg px-3 py-2 text-[13px]" />
                 <div className="flex gap-2 items-center">
-                  <label className="px-3 py-1.5 rounded-full bg-mist border border-line font-mono text-[11px] cursor-pointer">Subir archivo
-                    <input type="file" accept="image/*" className="hidden" onChange={async (e) => {
+                  <label className="px-3 py-1.5 rounded-full bg-mist border border-line font-mono text-[11px] cursor-pointer">{busy === i ? "Subiendo…" : "Subir archivo"}
+                    <input type="file" accept="image/*" className="hidden" disabled={busy !== null} onChange={async (e) => {
                       const file = e.target.files?.[0]; if (!file) return;
-                      if (isSupabaseConfigured && supabase) {
-                        const name = `covers/${Date.now()}-${file.name}`;
-                        const { error } = await supabase.storage.from("covers").upload(name, file, { upsert: true });
-                        if (!error) {
-                          const { data } = supabase.storage.from("covers").getPublicUrl(name);
-                          update(i, { src: data.publicUrl });
-                        } else {
-                          // fallback local preview
-                          update(i, { src: URL.createObjectURL(file) });
-                        }
-                      } else {
-                        update(i, { src: URL.createObjectURL(file) });
-                      }
+                      e.target.value = "";
+                      setBusy(i); setErr(null);
+                      const res = await uploadCover(file);
+                      setBusy(null);
+                      if ("err" in res) { setErr(`Bloque ${i + 1}: ${res.err}`); return; }
+                      update(i, { src: res.url });
                     }} />
                   </label>
                   <span className="font-mono text-[11px] text-muted truncate">{b.src?.slice(0, 40)}</span>
                 </div>
+                {err && <p className="font-mono text-[11px] text-warn">{err}</p>}
               </>
             )}
             {b.type === "table" && (
@@ -109,6 +176,10 @@ export default function AdminArticles() {
   const [isNew, setIsNew] = useState(false);
   const [saving, setSaving] = useState(false);
   const [msg, setMsg] = useState<string | null>(null);
+  const [origImage, setOrigImage] = useState<string>("");
+  const [origBodyPaths, setOrigBodyPaths] = useState<string[]>([]);
+  const [uploadingCover, setUploadingCover] = useState(false);
+  const [coverErr, setCoverErr] = useState<string | null>(null);
 
   const load = async () => {
     const data = await fetchArticles();
@@ -137,6 +208,9 @@ export default function AdminArticles() {
       body: [{ type: "h2", text: "Introducción" }, { type: "p", text: "Empieza aquí..." }],
       references: [{ text: "Fuente demo", url: "https://doi.org/" }],
     });
+    setOrigImage("https://picsum.photos/800/600");
+    setOrigBodyPaths([]);
+    setCoverErr(null);
     setIsNew(true);
   };
 
@@ -165,6 +239,11 @@ export default function AdminArticles() {
       };
       const { error } = await supabase.from("articles").upsert(payload, { onConflict: "slug" });
       if (error) { setMsg(`Error Supabase: ${error.message}`); setSaving(false); setTimeout(()=>setMsg(null),4000); return; }
+      // Reemplazo efectivo: borra la portada vieja del bucket si nadie más la usa
+      await cleanupOldCover(origImage, editing.image, editing.slug);
+      // y las imágenes de bloques que se quitaron o reemplazaron
+      const keepUrls = [editing.image, ...editing.body.filter((b) => b.type === "image" && b.src).map((b) => b.src as string)];
+      await cleanupRemovedBlocks(origBodyPaths, keepUrls, editing.slug);
     }
     // local fallback update
     setArticles(prev => {
@@ -200,7 +279,7 @@ export default function AdminArticles() {
             <div><label className="font-mono text-[11px] text-muted">Min lectura</label><input type="number" value={editing.readMin} onChange={e=>setEditing({...editing, readMin: parseInt(e.target.value)||5})} className="mt-1 w-full border border-line rounded-xl px-3 py-2 text-[13px]" /></div>
             <div><label className="font-mono text-[11px] text-muted">Tier</label><select value={editing.tier} onChange={e=>setEditing({...editing, tier: e.target.value as Tier})} className="mt-1 w-full border border-line rounded-xl px-3 py-2 text-[13px] bg-white"><option>Divulgación científica</option><option>Interpretación BiolNexo</option><option>Investigación publicada</option></select></div>
             <div><label className="font-mono text-[11px] text-muted">Autor</label><select value={editing.authorId} onChange={e=>setEditing({...editing, authorId: e.target.value})} className="mt-1 w-full border border-line rounded-xl px-3 py-2 text-[13px] bg-white">{authors.map(a=><option key={a.id} value={a.id}>{a.name}</option>)}</select></div>
-            <div><label className="font-mono text-[11px] text-muted">Imagen URL o archivo</label><input value={editing.image} onChange={e=>setEditing({...editing, image: e.target.value})} className="mt-1 w-full border border-line rounded-xl px-3 py-2 text-[13px]" placeholder="https://..." /><label className="mt-2 inline-flex px-3 py-1.5 rounded-full bg-mist border border-line font-mono text-[11px] cursor-pointer">Subir archivo<input type="file" accept="image/*" className="hidden" onChange={async e=>{ const f=e.target.files?.[0]; if(!f) return; if(isSupabaseConfigured && supabase){ const name=`covers/${Date.now()}-${f.name}`; const {error}=await supabase.storage.from("covers").upload(name,f,{upsert:true}); if(!error){ const {data}=supabase.storage.from("covers").getPublicUrl(name); setEditing({...editing, image: data.publicUrl}); } else setEditing({...editing, image: URL.createObjectURL(f)}); } else setEditing({...editing, image: URL.createObjectURL(f)}); }} /></label></div>
+            <div><label className="font-mono text-[11px] text-muted">Imagen URL o archivo</label><input value={editing.image} onChange={e=>setEditing({...editing, image: e.target.value})} className="mt-1 w-full border border-line rounded-xl px-3 py-2 text-[13px]" placeholder="https://..." /><label className="mt-2 inline-flex px-3 py-1.5 rounded-full bg-mist border border-line font-mono text-[11px] cursor-pointer">{uploadingCover ? "Subiendo…" : "Subir archivo"}<input type="file" accept="image/*" className="hidden" disabled={uploadingCover} onChange={async e=>{ const f=e.target.files?.[0]; if(!f) return; e.target.value=""; setUploadingCover(true); setCoverErr(null); const res=await uploadCover(f); setUploadingCover(false); if("err" in res){ setCoverErr(res.err); return; } setEditing({...editing, image: res.url}); }} /></label>{coverErr && <p className="mt-1 font-mono text-[11px] text-warn">{coverErr}</p>}{editing.image && !editing.image.startsWith("blob:") && <img src={editing.image} alt="Vista previa de portada" className="mt-2 w-full max-h-44 object-cover rounded-xl border border-line" />}</div>
             <div><label className="font-mono text-[11px] text-muted">Caption</label><input value={editing.imageCaption} onChange={e=>setEditing({...editing, imageCaption: e.target.value})} className="mt-1 w-full border border-line rounded-xl px-3 py-2 text-[13px]" /></div>
             <div className="sm:col-span-2"><label className="font-mono text-[11px] text-muted">Tags (coma separada)</label><input value={editing.tags.join(", ")} onChange={e=>setEditing({...editing, tags: e.target.value.split(",").map(s=>s.trim()).filter(Boolean)})} className="mt-1 w-full border border-line rounded-xl px-3 py-2 text-[13px] font-mono" /></div>
             <div><label className="font-mono text-[11px] text-muted flex items-center gap-2"><input type="checkbox" checked={!!editing.featured} onChange={e=>setEditing({...editing, featured: e.target.checked})} /> Destacado</label></div>
@@ -254,7 +333,7 @@ export default function AdminArticles() {
             </div>
             <div className="flex gap-2 shrink-0">
               <Link to={`/articulo/${a.slug}`} target="_blank" className="px-3 py-2 rounded-full bg-mist border border-line font-mono text-[11px] hover:border-primary/30">Ver →</Link>
-              <button onClick={()=>{ setEditing(a); setIsNew(false); }} className="px-4 py-2 rounded-full bg-white border border-line font-semibold text-[12px] hover:border-primary/30">Editar</button>
+              <button onClick={()=>{ setEditing(a); setOrigImage(a.image); setOrigBodyPaths(bodyStoragePaths(a.body)); setCoverErr(null); setIsNew(false); }} className="px-4 py-2 rounded-full bg-white border border-line font-semibold text-[12px] hover:border-primary/30">Editar</button>
               <button onClick={()=>remove(a.slug)} className="px-3 py-2 rounded-full bg-white border border-line text-warn hover:border-warn/30"><IconClose className="w-4 h-4" /></button>
             </div>
           </div>

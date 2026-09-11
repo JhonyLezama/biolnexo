@@ -27,16 +27,23 @@ export default function AdminDrafts() {
   const [expanded, setExpanded] = useState<string | null>(null);
   const [detail, setDetail] = useState<Record<string, Draft>>({});
   const [msg, setMsg] = useState<string | null>(null);
+  const [sessionEmail, setSessionEmail] = useState<string | null>(null);
 
   const load = async () => {
     if (!isSupabaseConfigured || !supabase) return;
     setBackend(true);
-    const { data } = await supabase
+    const { data: sess } = await supabase.auth.getSession();
+    setSessionEmail(sess.session?.user?.email?.toLowerCase() ?? null);
+    const { data, error } = await supabase
       .from("drafts")
       .select("id,title,slug,excerpt,area_slug,lang,tier,status,body_json,references,source_doi,created_at")
       .eq("status", "pending_review")
       .order("created_at", { ascending: false })
       .limit(20);
+    if (error) {
+      setMsg(`No se pueden leer borradores (RLS): ${error.message}. Ejecuta supabase/migrations/20260914_fix_approve_editor.sql y entra con magic-link biolnexo@gmail.com en este navegador.`);
+      return;
+    }
     if (data) setDrafts(data as Draft[]);
     const [c, s, a, d] = await Promise.all([
       supabase.from("categories").select("slug", { count: "exact", head: true }),
@@ -62,6 +69,14 @@ export default function AdminDrafts() {
   const approve = async (d: Draft) => {
     const full = detail[d.id] ?? d;
     if (!supabase) return;
+    // 1. Verifica sesión editor real (el JWT es lo que evalúa RLS)
+    const { data: sess } = await supabase.auth.getSession();
+    const email = sess.session?.user?.email?.toLowerCase() ?? null;
+    setSessionEmail(email);
+    if (email !== "biolnexo@gmail.com") {
+      setMsg(`Sin sesión editor (${email ?? "sin sesión"}). Ve a /admin/login, pide el magic-link de biolnexo@gmail.com y ábrelo EN ESTE MISMO navegador. Sin eso, RLS bloquea el insert en articles.`);
+      return;
+    }
     // Mapeo mínimo a articles: usa slug de draft o genera
     const slug = full.slug || full.title.toLowerCase().replace(/[^a-z0-9]+/g, "-").slice(0, 48);
     const payload = {
@@ -83,23 +98,41 @@ export default function AdminDrafts() {
     };
     const { error: insErr } = await supabase.from("articles").insert(payload);
     if (insErr) {
-      setMsg(`No se pudo publicar (RLS): ${insErr.message}. Para demo, se marca aprobado local. Configura service_role o añade policy anon.`);
-      // fallback: marca local
-      setDrafts((prev) => prev.filter((x) => x.id !== d.id));
-      setTimeout(() => setMsg(null), 4000);
+      setMsg(`No se pudo publicar (RLS/DB): ${insErr.message}. El borrador SIGUE pendiente (no se borró). Ejecuta supabase/migrations/20260914_fix_approve_editor.sql en Supabase → SQL Editor y reintenta con sesión biolnexo@gmail.com.`);
+      setTimeout(() => setMsg(null), 8000);
       return;
     }
-    await supabase.from("drafts").update({ status: "approved" }).eq("id", d.id);
-    await supabase.from("draft_reviews").insert({ draft_id: d.id, editor: "biolnexo@gmail.com", decision: "approved", note: "Aprobado desde /admin" });
-    setDrafts((prev) => prev.filter((x) => x.id !== d.id));
-    setMsg(`Publicado como /articulo/${slug} ✓`);
+    const { error: updErr } = await supabase.from("drafts").update({ status: "approved" }).eq("id", d.id);
+    if (updErr) {
+      setMsg(`Artículo publicado como /articulo/${slug}, pero no se pudo marcar el borrador como aprobado: ${updErr.message}. Márcalo manual en Supabase.`);
+      setTimeout(() => setMsg(null), 8000);
+      load();
+      return;
+    }
+    const { error: revErr } = await supabase.from("draft_reviews").insert({ draft_id: d.id, editor: "biolnexo@gmail.com", decision: "approved", note: "Aprobado desde /admin" });
+    if (revErr) {
+      setMsg(`Publicado como /articulo/${slug} ✓ (pero no se guardó la revisión: ${revErr.message}).`);
+    } else {
+      setMsg(`Publicado como /articulo/${slug} ✓`);
+    }
     setTimeout(() => setMsg(null), 3000);
     load();
   };
 
   const reject = async (d: Draft) => {
     if (!supabase) return;
-    await supabase.from("drafts").update({ status: "rejected" }).eq("id", d.id);
+    const { data: sess } = await supabase.auth.getSession();
+    const email = sess.session?.user?.email?.toLowerCase() ?? null;
+    if (email !== "biolnexo@gmail.com") {
+      setMsg(`Sin sesión editor (${email ?? "sin sesión"}). Entra con magic-link biolnexo@gmail.com en este navegador.`);
+      return;
+    }
+    const { error: updErr } = await supabase.from("drafts").update({ status: "rejected" }).eq("id", d.id);
+    if (updErr) {
+      setMsg(`No se pudo rechazar: ${updErr.message}. Ejecuta el fix RLS 20260914.`);
+      setTimeout(() => setMsg(null), 6000);
+      return;
+    }
     await supabase.from("draft_reviews").insert({ draft_id: d.id, editor: "biolnexo@gmail.com", decision: "rejected" });
     setDrafts((prev) => prev.filter((x) => x.id !== d.id));
     setMsg(`Rechazado ${d.title}`);
@@ -117,6 +150,11 @@ export default function AdminDrafts() {
             <span className={`w-2 h-2 rounded-full ${backend ? "bg-bio" : "bg-warn"}`} /> {backend ? "Supabase conectado" : "Modo local"}
           </span>
           <span className="font-mono text-[11px] text-muted">nicho: biotecnologia / tendencias / experimentos-caseros / software-salud</span>
+          {backend && (
+            <span className={`font-mono text-[11px] px-3 py-1 rounded-full border ${sessionEmail === "biolnexo@gmail.com" ? "bg-bio-soft text-bio border-bio/20" : "bg-warn-soft text-warn border-warn/20"}`}>
+              {sessionEmail === "biolnexo@gmail.com" ? `editor: ${sessionEmail}` : `sesión: ${sessionEmail ?? "ninguna"} — entra con magic-link`}
+            </span>
+          )}
         </div>
         {backend && (
           <div className="mt-4 grid grid-cols-2 lg:grid-cols-4 gap-3">

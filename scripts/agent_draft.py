@@ -29,7 +29,8 @@ Reglas BiolNexo (inviolables):
 - Solo afirma lo que esté en SOURCES con DOI/URL verificable. Si no hay DOI, fuerza tier="Divulgación científica" y disclaimer demo.
 - Estructura mínima: 1x h2 introducción, 3-4x p de desarrollo (con datos de SOURCES, sin relleno), 1x list o quote, 1x note de cierre. Opcional table/sequence. No inventes image/table sin fuente.
 - BodyBlock usa key "text", nunca "content": {"type": "h2", "text": "..."}, {"type": "p", "text": "..."}.
-- Referencias: array con {{text, url}} exactamente de SOURCES. Verifica que url responde 200.
+- SOURCES trae papers reales (doi, title, url, abstract, authors, journal). Resume 1 idea verificable por fuente y cítala en references con su url real.
+- PROHIBIDO inventar DOIs o URLs. Si las fuentes no alcanzan, devuelve references: [], source_doi: null y tier "Divulgación científica" (escritura propia del modelo, sin afirmar estudios).
 - Tier: "Investigación publicada" solo si DOI resuelve y methodology presente; si no, "Interpretación BiolNexo" o "Divulgación científica".
 - Idioma {lang}: todo el borrador en ese idioma. No mezcles.
 - Salida: JSON válido con keys {{title, excerpt, category, tier, body: BodyBlock[], references: Reference[], source_doi}} Sin markdown extra.
@@ -40,8 +41,65 @@ SOURCES:
 Genera solo JSON. No texto fuera del JSON.
 """)
 
-def normalize_body_blocks(body):
-    # Gemini suele devolver {"type","content"}; el frontend (BodyBlock) espera {"type","text"}.
+AREA_QUERIES = {
+    "biotecnologia": "biotechnology CRISPR gene editing",
+    "tendencias": "genomics trends precision medicine",
+    "experimentos-caseros": "DNA extraction classroom experiment",
+    "software-salud": "digital health mobile app",
+}
+
+def fetch_sources(area, n=3):
+    # OpenAlex (gratis, sin key): papers reales con DOI para que el modelo
+    # resuma y cite links que existen. Si falla, lista vacía -> Divulgación.
+    import urllib.request
+    import urllib.parse
+    q = AREA_QUERIES.get(area, area)
+    params = urllib.parse.urlencode({
+        "search": q,
+        "filter": "from_publication_date:2023-01-01,has_doi:true",
+        "per-page": n,
+        "select": "doi,title,abstract_inverted_index,primary_location,publication_date,authorships",
+        "mailto": "biolnexo@gmail.com",
+    })
+    try:
+        req = urllib.request.Request(
+            f"https://api.openalex.org/works?{params}",
+            headers={"User-Agent": "BiolNexo/1.0 (mailto:biolnexo@gmail.com)"},
+        )
+        with urllib.request.urlopen(req, timeout=15) as r:
+            payload = json.loads(r.read().decode("utf-8"))
+    except Exception as e:
+        print(f"[BiolNexo] OpenAlex falló ({e}) -> sin fuentes reales, tier Divulgación.")
+        return []
+    out = []
+    for w in payload.get("results", [])[:n]:
+        doi = (w.get("doi") or "").replace("https://doi.org/", "")
+        inv = w.get("abstract_inverted_index") or {}
+        abstract = ""
+        if inv:
+            pos = {}
+            for word, idxs in inv.items():
+                for i in idxs:
+                    pos[i] = word
+            abstract = " ".join(pos[i] for i in sorted(pos)[:80])
+        loc = w.get("primary_location") or {}
+        src = loc.get("source") or {}
+        url = loc.get("landing_page_url") or w.get("doi") or ""
+        authors = ", ".join(a.get("author", {}).get("display_name", "") for a in (w.get("authorships") or [])[:3])
+        out.append({
+            "doi": doi,
+            "title": w.get("title") or "",
+            "url": url,
+            "abstract": abstract,
+            "authors": authors,
+            "journal": src.get("display_name") or "",
+            "date": w.get("publication_date") or "",
+        })
+    real = [s for s in out if s["doi"]]
+    print(f"[BiolNexo] Fuentes reales OpenAlex: {len(real)}")
+    return real
+
+def normalize_body_blocks(body):    # Gemini suele devolver {"type","content"}; el frontend (BodyBlock) espera {"type","text"}.
     norm = []
     for b in (body or []):
         if not isinstance(b, dict):
@@ -141,6 +199,17 @@ def generate_draft(area: str, lang: str, sources_json: str):
             break
         except Exception as e:
             print(f"[BiolNexo] No se pudo listar modelos {api_ver}: {e}")
+
+    # Si vienen sources demo (como las del workflow por defecto), intenta
+    # reemplazarlas por papers reales de OpenAlex antes de llamar al modelo.
+    try:
+        parsed_sources = json.loads(sources_json or "[]")
+    except Exception:
+        parsed_sources = []
+    if not parsed_sources or "biolnexo.demo" in json.dumps(parsed_sources):
+        real = fetch_sources(area)
+        if real:
+            sources_json = json.dumps(real, ensure_ascii=False)
 
     prompt = TEMPLATE_PROMPT.format(area=area, lang=lang, sources_json=sources_json)
     for api_ver, models in candidates_api:

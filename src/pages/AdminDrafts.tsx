@@ -92,7 +92,9 @@ export default function AdminDrafts() {
       tags: [full.area_slug],
       tier: full.tier,
       featured: false,
-      source: { journal: "BiolNexo", year: new Date().getFullYear(), doi: full.source_doi || "10.5281/biolnexo.demo.0000", url: `https://doi.org/${full.source_doi || ""}`, license: "CC BY-NC 4.0", type: "Borrador agente" },
+      source: full.source_doi
+        ? { journal: "BiolNexo", year: new Date().getFullYear(), doi: full.source_doi, url: `https://doi.org/${full.source_doi}`, license: "CC BY-NC 4.0", type: "Borrador agente" }
+        : { journal: "BiolNexo", year: new Date().getFullYear(), doi: "pendiente-de-validacion", url: "https://biolnexo.vercel.app", license: "CC BY-NC 4.0", type: "Divulgación" },
       body: full.body_json || [{ type: "p", text: "Contenido generado por agente." }],
       references: full.references || [],
     };

@@ -1,7 +1,6 @@
 import { useState, type FormEvent } from "react";
 import { Link } from "react-router-dom";
 import {
-  articles,
   articlesByCategory,
   bioTools,
   categories,
@@ -14,6 +13,7 @@ import {
   sequencingCost,
   softwareProjects,
   tickerItems,
+  useArticles,
 } from "../data/content";
 import HeroViz from "../components/HeroViz";
 import {
@@ -75,11 +75,12 @@ function Ticker() {
 
 export default function Home() {
   usePageTitle("BiolNexo — Biotecnología viral, tendencias y software de salud");
-  const featured = articles.find((a) => a.featured) ?? articles[0];
-  const latest = articles.slice(1, 7);
+  const allArts = useArticles();
+  const featured = allArts.find((a) => a.featured) ?? allArts[0];
+  const latest = allArts.slice(1, 7);
   const bioArts = [
-    ...articlesByCategory("tendencias"),
-    ...articlesByCategory("biotecnologia"),
+    ...articlesByCategory("tendencias", allArts),
+    ...articlesByCategory("biotecnologia", allArts),
   ].slice(0, 3);
 
   const [email, setEmail] = useState("");
@@ -225,14 +226,14 @@ export default function Home() {
                       </span>
                     </Link>
                   ) : (
-                    <CategoryCard category={c} count={articlesByCategory(c.slug).length} className="h-full" />
+                    <CategoryCard category={c} count={articlesByCategory(c.slug, allArts).length} className="h-full" />
                   )}
                 </Reveal>
               );
             })}
             {categories.slice(4).map((c, i) => (
               <Reveal key={c.slug} delay={i * 80} className={i === 1 ? "sm:col-span-2 lg:col-span-1" : ""}>
-                <CategoryCard category={c} count={articlesByCategory(c.slug).length} className="h-full" />
+                <CategoryCard category={c} count={articlesByCategory(c.slug, allArts).length} className="h-full" />
               </Reveal>
             ))}
           </div>

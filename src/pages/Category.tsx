@@ -1,10 +1,10 @@
 import { useMemo, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import {
-  articles,
   articlesByCategory,
   categories,
   categoryBySlug,
+  useArticles,
 } from "../data/content";
 import type { Tier } from "../types";
 import { LEGACY_SLUG_MAP } from "../types";
@@ -29,13 +29,14 @@ export function TemaPage() {
   usePageTitle(cat ? `${cat.name} — BiolNexo` : "Área no encontrada — BiolNexo");
 
   const [sort, setSort] = useState<"recientes" | "az" | "lectura">("recientes");
+  const all = useArticles();
 
   const arts = useMemo(() => {
-    const list = articlesByCategory(slug ?? "");
+    const list = articlesByCategory(slug ?? "", all);
     if (sort === "az") return [...list].sort((a, b) => a.title.localeCompare(b.title));
     if (sort === "lectura") return [...list].sort((a, b) => a.readMin - b.readMin);
     return [...list].sort((a, b) => b.date.localeCompare(a.date));
-  }, [slug, sort]);
+  }, [slug, sort, all]);
 
   if (!cat) {
     return (
@@ -54,8 +55,7 @@ export function TemaPage() {
   }
 
   const Icon = catIcons[cat.icon];
-  const others = categories.filter((c) => c.slug !== cat.slug).slice(0, 4);
-  const isLegacy = rawSlug !== slug && !!LEGACY_SLUG_MAP[rawSlug ?? ""];
+  const others = categories.filter((c) => c.slug !== cat.slug).slice(0, 4);  const isLegacy = rawSlug !== slug && !!LEGACY_SLUG_MAP[rawSlug ?? ""];
 
   return (
     <main>
@@ -165,7 +165,7 @@ export function TemaPage() {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
             {others.map((c, i) => (
               <Reveal key={c.slug} delay={i * 80}>
-                <CategoryCard category={c} count={articlesByCategory(c.slug).length} className="h-full" />
+                <CategoryCard category={c} count={articlesByCategory(c.slug, all).length} className="h-full" />
               </Reveal>
             ))}
           </div>
@@ -182,10 +182,11 @@ export function CienciaHub() {
   const [q, setQ] = useState("");
   const [cat, setCat] = useState<string>("todas");
   const [tier, setTier] = useState<Tier | "Todos">("Todos");
+  const all = useArticles();
 
   const filtered = useMemo(() => {
     const term = q.trim().toLowerCase();
-    return articles
+    return all
       .filter((a) => cat === "todas" || a.category === cat)
       .filter((a) => tier === "Todos" || a.tier === tier)
       .filter(
@@ -196,7 +197,7 @@ export function CienciaHub() {
           a.tags.join(" ").toLowerCase().includes(term),
       )
       .sort((a, b) => b.date.localeCompare(a.date));
-  }, [q, cat, tier]);
+  }, [q, cat, tier, all]);
 
   return (
     <main>

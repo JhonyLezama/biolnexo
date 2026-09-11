@@ -3,11 +3,14 @@ import { Link, useParams } from "react-router-dom";
 import type { BodyBlock } from "../types";
 import {
   categoryName,
+  fetchArticleBySlug,
+  fetchArticles,
   fmtDate,
   getArticle,
   getAuthor,
   relatedTo,
 } from "../data/content";
+import type { Article } from "../types";
 import { ArticleCard } from "../components/Cards";
 import { Reveal, TierBadge, usePageTitle } from "../components/ui";
 import {
@@ -262,13 +265,43 @@ function Block({ block }: { block: BodyBlock }) {
 
 export default function ArticlePage() {
   const { slug } = useParams();
-  const article = getArticle(slug ?? "");
-  usePageTitle(article ? `${article.title} — BiolNexo` : "Artículo no encontrado — BiolNexo");
+  const [article, setArticle] = useState<Article | undefined>(() => getArticle(slug ?? ""));
+  const [list, setList] = useState<Article[]>(() => getArticle(slug ?? "") ? [getArticle(slug ?? "") as Article] : []);
+  const [checked, setChecked] = useState(false);
+  usePageTitle(article ? `${article.title} — BiolNexo` : checked ? "Artículo no encontrado — BiolNexo" : "Cargando artículo — BiolNexo");
+
+  useEffect(() => {
+    let alive = true;
+    const s = slug ?? "";
+    setArticle(getArticle(s));
+    setChecked(false);
+    fetchArticleBySlug(s).then((a) => {
+      if (alive) {
+        setArticle(a);
+        setChecked(true);
+      }
+    });
+    fetchArticles().then((data) => {
+      if (alive) setList(data);
+    });
+    return () => {
+      alive = false;
+    };
+  }, [slug]);
   const progress = useReadingProgress();
   const { copied: citeCopied, copy: copyCite } = useCopy();
   const { copied: linkCopied, copy: copyLink } = useCopy();
 
-  const related = useMemo(() => (article ? relatedTo(article.slug) : []), [article]);
+  const related = useMemo(() => (article ? relatedTo(article.slug, 3, list.length ? list : [article]) : []), [article, list]);
+
+  if (!article && !checked) {
+    return (
+      <main className="max-w-3xl mx-auto px-5 pt-40 pb-24 text-center">
+        <p className="font-mono text-[12px] uppercase tracking-[0.22em] text-primary">Cargando…</p>
+        <h1 className="mt-4 font-display font-bold text-3xl">Buscando el artículo…</h1>
+      </main>
+    );
+  }
 
   if (!article) {
     return (

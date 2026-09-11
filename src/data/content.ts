@@ -855,13 +855,13 @@ export const articles: Article[] = [
 export const getArticle = (slug: string) =>
   articles.find((a) => a.slug === slug);
 
-export const articlesByCategory = (slug: string) =>
-  articles.filter((a) => a.category === slug);
+export const articlesByCategory = (slug: string, pool: Article[] = articles) =>
+  pool.filter((a) => a.category === slug);
 
-export const relatedTo = (slug: string, n = 3) => {
-  const current = getArticle(slug);
-  if (!current) return articles.slice(0, n);
-  return articles
+export const relatedTo = (slug: string, n = 3, pool: Article[] = articles) => {
+  const current = pool.find((a) => a.slug === slug) ?? getArticle(slug);
+  if (!current) return pool.slice(0, n);
+  return pool
     .filter((a) => a.slug !== slug)
     .sort(
       (a, b) =>
@@ -1360,6 +1360,7 @@ export function categoryBySlug(slug: string) {
 /* Supabase híbrido — backend real con fallback estático (nicho 4)       */
 /* ------------------------------------------------------------------ */
 import { supabase, isSupabaseConfigured } from "../lib/supabase";
+import { useEffect, useState } from "react";
 
 export async function fetchCategories(): Promise<Category[]> {
   if (!isSupabaseConfigured || !supabase) return categories;
@@ -1373,7 +1374,11 @@ export async function fetchArticles(): Promise<Article[]> {
   const { data, error } = await supabase.from("articles").select("*").order("date", { ascending: false });
   if (error || !data?.length) return articles;
   // mapea snake_case de DB a camelCase del tipo
-  return (data as unknown as Array<Record<string, unknown>>).map((r) => ({
+  return (data as unknown as Array<Record<string, unknown>>).map(mapArticleRow);
+}
+
+function mapArticleRow(r: Record<string, unknown>): Article {
+  return {
     slug: r.slug as string,
     title: r.title as string,
     category: r.category as Article["category"],
@@ -1389,7 +1394,33 @@ export async function fetchArticles(): Promise<Article[]> {
     source: r.source as Article["source"],
     body: r.body as Article["body"],
     references: r.references as Article["references"],
-  }));
+  };
+}
+
+// Un artículo por slug: Supabase primero, estático como fallback.
+// Sin esto, /articulo/:slug de un publicado desde borrador da "slug desconocido".
+export async function fetchArticleBySlug(slug: string): Promise<Article | undefined> {
+  const fallback = getArticle(slug);
+  if (!isSupabaseConfigured || !supabase) return fallback;
+  const { data, error } = await supabase.from("articles").select("*").eq("slug", slug).maybeSingle();
+  if (error || !data) return fallback;
+  return mapArticleRow(data as unknown as Record<string, unknown>);
+}
+
+// Lista híbrida para páginas públicas: arranca con estático (sin parpadeo)
+// y reemplaza con Supabase cuando llega (incluye aprobados del agente).
+export function useArticles(): Article[] {
+  const [list, setList] = useState<Article[]>(articles);
+  useEffect(() => {
+    let alive = true;
+    fetchArticles().then((data) => {
+      if (alive) setList(data);
+    });
+    return () => {
+      alive = false;
+    };
+  }, []);
+  return list;
 }
 
 export async function fetchSoftwareProjects(): Promise<SoftwareProject[]> {

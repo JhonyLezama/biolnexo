@@ -1,12 +1,12 @@
 import { useEffect, useMemo, useState, type ReactNode } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import {
-  articles,
   categoryName,
   datasets,
   experiments,
   getAuthor,
   publications,
+  useArticles,
 } from "../data/content";
 import { ArticleCard } from "../components/Cards";
 import { Reveal, TierBadge, usePageTitle } from "../components/ui";
@@ -44,6 +44,7 @@ export default function SearchPage() {
   }, [params]);
 
   const term = q.trim().toLowerCase();
+  const allArts = useArticles();
 
   const toggleType = (t: TypeFilter) =>
     setTypes((prev) => (prev.includes(t) ? prev.filter((x) => x !== t) : [...prev, t]));
@@ -52,7 +53,7 @@ export default function SearchPage() {
     if (term.length < 2) return null;
     const m = (s: string) => s.toLowerCase().includes(term);
     return {
-      arts: articles.filter(
+      arts: allArts.filter(
         (a) =>
           m(a.title) ||
           m(a.excerpt) ||
@@ -65,7 +66,7 @@ export default function SearchPage() {
       sets: datasets.filter((d) => m(d.name) || m(d.kind) || m(d.description)),
       pubs: publications.filter((p) => m(p.title) || m(p.area) || m(p.question)),
     };
-  }, [term]);
+  }, [term, allArts]);
 
   const submit = () => {
     if (q.trim()) setParams({ q: q.trim() });

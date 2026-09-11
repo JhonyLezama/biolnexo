@@ -27,7 +27,8 @@ Objetivo: generar BORRADOR tipado BodyBlock para área {area} en idioma {lang}.
 
 Reglas BiolNexo (inviolables):
 - Solo afirma lo que esté en SOURCES con DOI/URL verificable. Si no hay DOI, fuerza tier="Divulgación científica" y disclaimer demo.
-- Estructura: 1x h2 introducción, 2-4x p, 1x list o quote, opcional table/sequence/note. No inventes image/table sin fuente.
+- Estructura mínima: 1x h2 introducción, 3-4x p de desarrollo (con datos de SOURCES, sin relleno), 1x list o quote, 1x note de cierre. Opcional table/sequence. No inventes image/table sin fuente.
+- BodyBlock usa key "text", nunca "content": {"type": "h2", "text": "..."}, {"type": "p", "text": "..."}.
 - Referencias: array con {{text, url}} exactamente de SOURCES. Verifica que url responde 200.
 - Tier: "Investigación publicada" solo si DOI resuelve y methodology presente; si no, "Interpretación BiolNexo" o "Divulgación científica".
 - Idioma {lang}: todo el borrador en ese idioma. No mezcles.

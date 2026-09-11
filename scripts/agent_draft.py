@@ -48,56 +48,128 @@ AREA_QUERIES = {
     "software-salud": "digital health mobile app",
 }
 
-def fetch_sources(area, n=3):
-    # OpenAlex (gratis, sin key): papers reales con DOI para que el modelo
-    # resuma y cite links que existen. Si falla, lista vacía -> Divulgación.
+AREA_QUERIES = {
+    # Dos ángulos por área para diversificar institutos/revistas (salud, bio, ingeniería)
+    "biotecnologia": ["biotechnology CRISPR gene editing", "synthetic biology bioengineering"],
+    "tendencias": ["genomics trends precision medicine", "artificial intelligence drug discovery"],
+    "experimentos-caseros": ["DNA extraction classroom experiment", "microscopy citizen science"],
+    "software-salud": ["digital health mobile app", "bioinformatics software genomics"],
+}
+
+def fetch_openalex(queries, n):
     import urllib.request
     import urllib.parse
-    q = AREA_QUERIES.get(area, area)
-    params = urllib.parse.urlencode({
-        "search": q,
-        "filter": "from_publication_date:2023-01-01,has_doi:true",
-        "per-page": n,
-        "select": "doi,title,abstract_inverted_index,primary_location,publication_date,authorships",
-        "mailto": "biolnexo@gmail.com",
-    })
-    try:
-        req = urllib.request.Request(
-            f"https://api.openalex.org/works?{params}",
-            headers={"User-Agent": "BiolNexo/1.0 (mailto:biolnexo@gmail.com)"},
-        )
-        with urllib.request.urlopen(req, timeout=15) as r:
-            payload = json.loads(r.read().decode("utf-8"))
-    except Exception as e:
-        print(f"[BiolNexo] OpenAlex falló ({e}) -> sin fuentes reales, tier Divulgación.")
-        return []
     out = []
-    for w in payload.get("results", [])[:n]:
-        doi = (w.get("doi") or "").replace("https://doi.org/", "")
-        inv = w.get("abstract_inverted_index") or {}
-        abstract = ""
-        if inv:
-            pos = {}
-            for word, idxs in inv.items():
-                for i in idxs:
-                    pos[i] = word
-            abstract = " ".join(pos[i] for i in sorted(pos)[:80])
-        loc = w.get("primary_location") or {}
-        src = loc.get("source") or {}
-        url = loc.get("landing_page_url") or w.get("doi") or ""
-        authors = ", ".join(a.get("author", {}).get("display_name", "") for a in (w.get("authorships") or [])[:3])
-        out.append({
-            "doi": doi,
-            "title": w.get("title") or "",
-            "url": url,
-            "abstract": abstract,
-            "authors": authors,
-            "journal": src.get("display_name") or "",
-            "date": w.get("publication_date") or "",
+    for q in queries:
+        if len(out) >= n:
+            break
+        params = urllib.parse.urlencode({
+            "search": q,
+            "filter": "from_publication_date:2024-01-01,has_doi:true,is_oa:true",
+            "per-page": n,
+            "select": "doi,title,abstract_inverted_index,primary_location,publication_date,authorships",
+            "mailto": "biolnexo@gmail.com",
         })
-    real = [s for s in out if s["doi"]]
-    print(f"[BiolNexo] Fuentes reales OpenAlex: {len(real)}")
-    return real
+        try:
+            req = urllib.request.Request(
+                f"https://api.openalex.org/works?{params}",
+                headers={"User-Agent": "BiolNexo/1.0 (mailto:biolnexo@gmail.com)"},
+            )
+            with urllib.request.urlopen(req, timeout=15) as r:
+                payload = json.loads(r.read().decode("utf-8"))
+        except Exception as e:
+            print(f"[BiolNexo] OpenAlex falló ({e})")
+            continue
+        for w in payload.get("results", []):
+            if len(out) >= n:
+                break
+            doi = (w.get("doi") or "").replace("https://doi.org/", "")
+            if not doi or any(s["doi"] == doi for s in out):
+                continue
+            inv = w.get("abstract_inverted_index") or {}
+            abstract = ""
+            if inv:
+                pos = {}
+                for word, idxs in inv.items():
+                    for i in idxs:
+                        pos[i] = word
+                abstract = " ".join(pos[i] for i in sorted(pos)[:80])
+            loc = w.get("primary_location") or {}
+            src = loc.get("source") or {}
+            url = loc.get("landing_page_url") or w.get("doi") or ""
+            authors = ", ".join(a.get("author", {}).get("display_name", "") for a in (w.get("authorships") or [])[:3])
+            out.append({
+                "doi": doi,
+                "title": w.get("title") or "",
+                "url": url,
+                "abstract": abstract,
+                "authors": authors,
+                "journal": src.get("display_name") or "",
+                "date": w.get("publication_date") or "",
+                "origin": "openalex",
+            })
+    return out
+
+def fetch_semanticscholar(queries, n):
+    # Respaldo cuando OpenAlex falla o trae poco: Semantic Scholar (gratis, sin key)
+    import urllib.request
+    import urllib.parse
+    out = []
+    for q in queries:
+        if len(out) >= n:
+            break
+        params = urllib.parse.urlencode({
+            "query": q,
+            "limit": n,
+            "fields": "title,abstract,url,authors,year,venue,externalIds,openAccessPdf",
+        })
+        try:
+            req = urllib.request.Request(
+                f"https://api.semanticscholar.org/graph/v1/paper/search?{params}",
+                headers={"User-Agent": "BiolNexo/1.0 (mailto:biolnexo@gmail.com)"},
+            )
+            with urllib.request.urlopen(req, timeout=15) as r:
+                payload = json.loads(r.read().decode("utf-8"))
+        except Exception as e:
+            print(f"[BiolNexo] Semantic Scholar falló ({e})")
+            continue
+        for p in payload.get("data", []):
+            if len(out) >= n:
+                break
+            ext = p.get("externalIds") or {}
+            doi = ext.get("DOI") or ""
+            if not doi or any(s["doi"] == doi for s in out):
+                continue
+            url = p.get("url") or (f"https://doi.org/{doi}" if doi else "")
+            authors = ", ".join(a.get("name", "") for a in (p.get("authors") or [])[:3])
+            pdf = p.get("openAccessPdf") or {}
+            out.append({
+                "doi": doi,
+                "title": p.get("title") or "",
+                "url": url,
+                "abstract": (p.get("abstract") or "")[:600],
+                "authors": authors,
+                "journal": p.get("venue") or "",
+                "date": str(p.get("year") or ""),
+                "pdf": pdf.get("url") or "",
+                "origin": "semanticscholar",
+            })
+    return out
+
+def fetch_sources(area, n=5):
+    # Orquestador: OpenAlex (open access, 2024+) primero; si trae poco,
+    # completa con Semantic Scholar. Sin fuentes -> lista vacía = Divulgación.
+    queries = AREA_QUERIES.get(area, [area])
+    out = fetch_openalex(queries, n)
+    if len(out) < 2:
+        extra = fetch_semanticscholar(queries, n)
+        seen = {s["doi"] for s in out}
+        for s in extra:
+            if s["doi"] not in seen and len(out) < n:
+                seen.add(s["doi"])
+                out.append(s)
+    print(f"[BiolNexo] Fuentes reales totales: {len(out)}")
+    return out
 
 def normalize_body_blocks(body):    # Gemini suele devolver {"type","content"}; el frontend (BodyBlock) espera {"type","text"}.
     norm = []
